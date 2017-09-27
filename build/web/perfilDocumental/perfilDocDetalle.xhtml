@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+        <ui:composition template="./../template/plantilla0.1.xhtml">
+            <ui:define name="breadcumb">
+                <p:breadCrumb styleClass="ShowOnDesktop" >
+                    <p:menuitem url="/principal" />
+                    <p:menuitem value="Detalle de perfil Documental" url="#" />
+                </p:breadCrumb>
+            </ui:define>
+
+
+            <ui:define name="content">
+                <h:form id="formPerfil">
+                    <p:panelGrid styleClass="Wid50"  columnClasses="Wid10,Wid50">
+                        <p:column>
+                            <p:outputLabel value="Perfil"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="biblioteca"
+                                             filter="true" 
+                                             widgetVar="cboBiblioteca" 
+                                             value="#{perfilDocumentalDetalleBean.perfilSelect}" required="true" styleClass="Wid100Imp">
+                                <p:ajax listener="#{perfilDocumentalDetalleBean.listarDetallePerfiles()}" update=":formPerfil:cars2"/>
+                                <f:selectItem itemLabel="Seleccione un Perfil" itemValue="-1" noSelectionOption="true"/>
+                                <f:selectItems value="#{perfilDocumentalDetalleBean.cboPerfiles}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton value="Guardar Cambios" actionListener="#{perfilDocumentalDetalleBean.actualizarTabla()}"
+                                             update="formPerfil" icon="fa fa-edit" iconPos="left">
+                                <p:confirm message="seguro que quiere ACTUALIZAR" header="Aviso" icon="fa fa-exclamation-triangle"/>
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:panelGrid>
+
+                    <p:dataTable id="cars2" var="pd" value="#{perfilDocumentalDetalleBean.lstPerfilDocumentalDetalle}" editable="true"  >
+                        <f:facet name="header">
+                            ADMINISTRACION DE PERFILES DE DOCUMENTALES
+                        </f:facet>
+
+                        <p:column headerText="Id PERFIL" rendered="false">
+                            <p:outputLabel value="#{pd.ID_PERFIL_DOCUMENTAL}"/>
+
+                        </p:column>
+                        <p:column headerText="ID_PD" rendered="false">
+                            <p:outputLabel value="#{pd.ID_PERFIL_DOCUMENTAL_DETALLE}"/>
+
+                        </p:column>
+                        <p:column headerText="PERFIL">
+
+                            <p:outputLabel value="#{pd.TABLA}"/>
+
+
+                        </p:column>
+                        <p:column headerText="CAMPO">
+                            <p:outputLabel value="#{pd.CAMPO}"/>
+
+
+                        </p:column>
+                        <p:column headerText="VISIBLE">
+                            <p:selectBooleanCheckbox value="#{pd.VISTA}"/>
+                        </p:column>
+                        <p:column headerText="REQUERIDO">
+                            <p:selectBooleanCheckbox value="#{pd.REQUERIDO}"/>
+                        </p:column>
+
+
+                    </p:dataTable>
+
+                    <p:confirmDialog global="true">
+                        <p:commandButton value="si" type="botton" icon="ui-icon-check" styleClass="ui-confirmdialog-yes"/>
+                        <p:commandButton value="no" type="botton" icon="ui-icon-close" styleClass="ui-confirmdialog-no"/>
+                    </p:confirmDialog>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

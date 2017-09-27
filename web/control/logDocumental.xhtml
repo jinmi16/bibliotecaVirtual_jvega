@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+      <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Reportes" url="#" />
+           <p:menuitem value="Log Documental"  url="#" />
+        </p:breadCrumb>
+
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmLog">
+
+
+            <p:dataTable var="log" id="tblLog"
+                         widgetVar="tblLog"
+                         value="#{logDocumentalBean.lazymodel}" scrollable="true" 
+                         scrollWidth="100%" scrollHeight="600" frozenRows="0" 
+                          paginator="true" rows="100" rowsPerPageTemplate="80,100,150"
+                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                          lazy="true" emptyMessage="No se encontraron registros."
+                          filteredValue="#{logDocumentalBean.filtroTabla}"
+                      >
+                <f:facet name="header">
+                    <p:outputPanel>
+                         <p:fragment autoUpdate="true">
+                            <h:outputText value="Buscar: "/>
+                            <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..." value="#{logDocumentalBean.query}"/>
+                            <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" value="Filtrar" actionListener="#{logDocumentalBean.accionFiltrar()}" />
+                        </p:fragment>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column filterStyle="display:none"  headerText="Fecha" filterBy="#{log.FECHA}" filterMatchMode="contains">
+                    <h:outputText value="#{log.FECHA}"/>
+                </p:column>
+                <p:column filterStyle="display:none"  headerText="Hora" filterBy="#{log.HORA}" filterMatchMode="contains">
+                    <h:outputText value="#{log.HORA}"/>
+                </p:column>
+                <p:column filterStyle="display:none"  headerText="IdDocumental" filterBy="#{log.ID_DOCUMENTAL}" filterMatchMode="contains">
+                    <h:outputText value="#{log.ID_DOCUMENTAL}"/>
+                </p:column>
+                   <p:column filterStyle="display:none"  headerText="Codigo" filterBy="#{log.OTRO}" filterMatchMode="contains">
+                    <h:outputText value="#{log.OTRO}"/>
+                </p:column>
+                 <p:column filterStyle="display:none"  headerText="Accion" filterBy="#{log.nameAccion}" filterMatchMode="contains">
+                    <h:outputText value="#{log.nameAccion}"/>
+                </p:column>
+                <p:column filterStyle="display:none"  headerText="Usuario" filterBy="#{log.nameUsuario}" filterMatchMode="contains">
+                    <h:outputText value="#{log.nameUsuario}"/>
+                </p:column>
+                <p:column filterStyle="display:none"  headerText="Personal" filterBy="#{log.namePersonal}" filterMatchMode="contains">
+                    <h:outputText value="#{log.namePersonal}"/>
+                </p:column>
+                <p:column filterStyle="display:none"  headerText="Biblioteca" filterBy="#{log.nameBiblioteca}" filterMatchMode="contains">
+                    <h:outputText value="#{log.nameBiblioteca}"/>
+                </p:column>
+             
+               
+            </p:dataTable>
+
+
+
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

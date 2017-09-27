@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Cambiar Contraseña" url="#" />
+           
+        </p:breadCrumb>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="frmContrasenaUpd">
+            <p:messages showDetail="true" closable="true"  redisplay="false"/>
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:outputLabel for="txtContrasenaAnt" value="CONTRASEÑA ACTUAL: " />
+                <p:inputText type="password" value="#{usuarioBean.usuario.CONTRASENA_ANT}" required="true" id="txtContrasenaAnt"/>
+                <p:outputLabel for="txtContrasenaNueva1" value="CONTRASEÑA NUEVA: " />
+                <p:inputText type="password"  value="#{usuarioBean.usuario.CONTRASENA_NUEVA1}" required="true" id="txtContrasenaNueva1"/>
+                <p:outputLabel for="txtContrasenaNueva2" value="REPITA CONTRASEÑA NUEVA: " />
+                <p:inputText type="password"  value="#{usuarioBean.usuario.CONTRASENA_NUEVA2}" required="true" id="txtContrasenaNueva2"/>
+                <p:commandButton actionListener="#{usuarioBean.cambiaContrasena()}" update=":frmContrasenaUpd" value="CAMBIAR CONTRASEÑA" />
+            </h:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

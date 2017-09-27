@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Personal" url="#" />
+            <p:menuitem value="Listado" url="/Personal/List" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu>
+            <p:menuitem value="Listado" outcome="personalList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Registrar" outcome="personalAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+        </p:tabMenu>
+        <p:separator />
+
+        <h:form id="frmListPersonal">
+            <p:dataTable var="personal" id="tblPersonal" 
+                         widgetVar="tblPersonal"
+                         value="#{personalB.lazymodel}" scrollable="true"
+                        scrollWidth="100%" scrollHeight="600" frozenRows="0" 
+                         paginator="true" rows="100" rowsPerPageTemplate="50,80,100"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                         lazy="true" emptyMessage="No se encontraron registros."
+                         filteredValue="#{personalB.filtroTabla}">
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <p:fragment autoUpdate="true">
+                            <h:outputText value="Buscar: "/>
+                            <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..." value="#{personalB.query}"/>
+                            <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" value="Filtrar" actionListener="#{personalB.accionFiltrar()}" />
+                        </p:fragment>
+                    </p:outputPanel>
+                </f:facet>
+                <p:column filterStyle="display:none" filterBy="#{personal.ID_PERSONAL_BIBLIOTECA}" filterMatchMode="contains" headerText="ID" width="1%" style="text-align:center;" rendered="false">
+                    <h:outputText value="#{personal.ID_PERSONAL_BIBLIOTECA}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.NOMBRES}" filterMatchMode="contains" headerText="Nombres" width="3%" style="text-align:center;">
+                    <h:outputText value="#{personal.NOMBRES}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.PATERNO}" filterMatchMode="contains" headerText="Ape.Paterno" width="2.5%" style="text-align:center;">
+                    <h:outputText value="#{personal.PATERNO}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.MATERNO}" filterMatchMode="contains" headerText="Ape.Materno" width="2.5%" style="text-align:center;">
+                    <h:outputText value="#{personal.MATERNO}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.DNI}" filterMatchMode="contains" headerText="Dni" width="2%" style="text-align:center;">
+                    <h:outputText value="#{personal.DNI}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.ID_BIBLIOTECA_MEDIADOR}" filterMatchMode="contains" headerText="BILIOTECA" width="2.5%" style="text-align:center;" rendered="false">
+                    <h:outputText value="#{personal.ID_BIBLIOTECA_MEDIADOR}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.BIBLIOTECA_MEDIADOR}" filterMatchMode="contains" headerText="Biblioteca" width="5%" style="text-align:center;">
+                    <h:outputText value="#{personal.BIBLIOTECA_MEDIADOR}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.CARGO}" filterMatchMode="contains" headerText="Cargo" width="3%" style="text-align:center;">
+                    <h:outputText value="#{personal.CARGO}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.CORREO}" filterMatchMode="contains" headerText="Correo Electrónico" width="4.5%" style="text-align:center;">
+                    <h:outputText value="#{personal.CORREO}"/>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.boolREPRESENTANTE}" filterMatchMode="contains" headerText="Rpte." width="2%" style="text-align:center;">
+                    <p:selectBooleanCheckbox value="#{personal.boolREPRESENTANTE}" disabled="true"></p:selectBooleanCheckbox>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{personal.boolActivo}" filterMatchMode="contains" headerText="Acivo" width="2%" style="text-align:center;">
+                    <p:selectBooleanCheckbox value="#{personal.boolActivo}" disabled="true"></p:selectBooleanCheckbox>
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{personal.boolActivo}" filterMatchMode="contains" headerText="Editar" width="2%" style="text-align:center;">
+                    <p:commandButton update=":frmListPersonal:grid" oncomplete="PF('dlbUpdPersonal').show()" icon="ui-icon-pencil">
+                        <f:setPropertyActionListener value="#{personal}" target="#{personalB.personalUpd}" />
+                    </p:commandButton>
+                </p:column>
+             
+
+            </p:dataTable>
+
+            
+            
+
+            <p:dialog closeOnEscape="true" header="..:: EDITAR PERSONAL BIBLIOTECA ::.."
+                      widgetVar="dlbUpdPersonal" modal="true" showEffect="clip"
+                      hideEffect="clip" resizable="false" closable="true">
+                <p:outputPanel id="grid" style="text-align: center;">
+                    <p:panelGrid columns="2" columnClasses="Wid20, Wid80">
+                        <h:outputLabel for="updId" value="ID:"/>
+                        <p:inputText id="updId" value="#{personalB.personalUpd.ID_PERSONAL_BIBLIOTECA}" disabled="true" styleClass="Wid100"/>
+                        <h:outputLabel for="updNombres" value="NOMBRES:"/>
+                        <p:inputText id="updNombres" value="#{personalB.personalUpd.NOMBRES}" styleClass="Wid100"/>
+                        <h:outputLabel for="updPaterno" value="PATERNO:"/>
+                        <p:inputText id="updPaterno" value="#{personalB.personalUpd.PATERNO}" styleClass="Wid100"/>
+                        <h:outputLabel for="updMaterno" value="MATERNO:"/>
+                        <p:inputText id="updMaterno" value="#{personalB.personalUpd.MATERNO}" styleClass="Wid100"/>
+                        <h:outputLabel for="updBiblioteca" value="BIBLIOTECA:"/>
+                        <p:selectOneMenu id="updBiblioteca"
+                                         filter="true" 
+                                         widgetVar="updBiblioteca" 
+                                         value="#{personalB.personalUpd.ID_BIBLIOTECA_MEDIADOR}" style="width: 100%">
+                            <f:selectItems value="#{personalB.cboBiblioteca}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel for="updCargo" value="CARGO:"/>
+                        <p:inputText id="updCargo" value="#{personalB.personalUpd.CARGO}" styleClass="Wid100"/>
+                        <h:outputLabel for="updCorreo" value="CORREO:"/>
+                        <p:inputText id="updCorreo" value="#{personalB.personalUpd.CORREO}" styleClass="Wid100"/>
+                        <h:outputLabel for="updRepresentante" value="REPRESENTANTE"/>
+                        <p:selectBooleanCheckbox id="updRepresentante" value="#{personalB.personalUpd.boolREPRESENTANTE}" disabled="false"/>
+                        <h:outputLabel for="updActivo" value="ACTIVO"/>
+                        <p:selectBooleanCheckbox id="updActivo" value="#{personalB.personalUpd.boolActivo}" disabled="false"/>
+                        <p:spacer/>                        
+                        <p:commandButton update=":frmListPersonal:tblPersonal"
+                                         styleClass="Wid70"
+                                         id="updBtn"
+                                         ajax="true"
+                                         icon="ui-icon-pencil"
+                                         value="EDITAR"
+                                         action="#{personalB.updPersonalBiblioteca()}">
+                            <p:confirm header="Confirme la acción" message="¿Está seguro de actualizar este registro?" icon="ui-icon-info" />  
+                        </p:commandButton>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+            <p:confirmDialog global="true" showEffect="puff" hideEffect="puff">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+        </h:form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </ui:define>
+
+
+</ui:composition>

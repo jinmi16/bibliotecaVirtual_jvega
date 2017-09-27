@@ -1,0 +1,148 @@
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+    <url-mapping id="login">
+        <pattern value="/" />
+        <view-id value="/bv/index.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="inicio">
+        <pattern value="/principal" />
+        <view-id value="/bv/inicio.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="bibliotecaList">
+        <pattern value="/Biblioteca/List" />
+        <view-id value="/bv/biblioteca/bibliotecaList.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="bibliotecaAdd">
+        <pattern value="/Biblioteca/Add" />
+        <view-id value="/bv/biblioteca/bibliotecaAdd.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="autorList">
+        <pattern value="/Autor/List" />
+        <view-id value="/bv/autor/autorList.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="autorAdd">
+        <pattern value="/Autor/Add" />
+        <view-id value="/bv/autor/autorAdd.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="personalList">
+        <pattern value="/Personal/List" />
+        <view-id value="/bv/personal/personalList.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="personalAdd">
+        <pattern value="/Personal/Add" />
+        <view-id value="/bv/personal/personalAdd.xhtml" />
+    </url-mapping>
+      <url-mapping id="micuentas">
+        <pattern value="/cuenta/upd" />
+        <view-id value="/bv/personal/miCuenta.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="usuarioList">
+        <pattern value="/Usuario/List" />
+        <view-id value="/bv/usuario/usuarioList.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="usuarioAdd">
+        <pattern value="/Usuario/Add" />
+        <view-id value="/bv/personal/usuarioAdd.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="error404">
+        <pattern value="/Error/404" />
+        <view-id value="/bv/default/404.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="accesoDenegado">
+        <pattern value="/Error/AccesoDenegado" />
+        <view-id value="/bv/default/accesoDenegado.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="documentalList">
+        <pattern value="/Documental/List" />
+        <view-id value="/bv/documental/documentalList.xhtml" />
+    </url-mapping>
+        
+    <url-mapping id="perfilDocumentalDetalle">
+        <pattern value="/Perfiles/Admin" />
+        <view-id value="/bv/perfilDocumental/perfilDocDetalle.xhtml" />
+    </url-mapping>
+    
+    <url-mapping id="controlDocumental">
+        <pattern value="/Biblioteca/ControlDocumental" />
+        <view-id value="/bv/perfilDocumental/controlDocumental.xhtml" />
+    </url-mapping>
+ 
+    <url-mapping id="documentalUpd">
+        <pattern value="/Documental/Upd" />
+        <view-id value="/bv/documental/documentalUpd.xhtml" />
+    </url-mapping> 
+    <url-mapping id="documentalUpdControl">
+        <pattern value="/perfilDocumental/UpdCont" />
+        <view-id value="/bv/perfilDocumental/documentalUpdControl.xhtml" />
+    </url-mapping> 
+      
+    <url-mapping id="reporteDiario">
+        <pattern value="/Reportes/reporteDiario" />
+        <view-id value="/bv/reportes/reporteDiario.xhtml" />
+    </url-mapping>    
+
+    <url-mapping id="reporteRangoTrabajador">
+        <pattern value="/Reportes/reporteRangoTrabajador" />
+        <view-id value="/bv/reportes/reporteRangoTrabajador.xhtml" />
+    </url-mapping>  
+    
+    <url-mapping id="reporteRangoTrabajadores">
+        <pattern value="/Reportes/reporteRangoTrabajadores" />
+        <view-id value="/bv/reportes/reporteRangoTrabajadores.xhtml" />
+    </url-mapping>  
+
+
+    <url-mapping id="reporteAnualTrabajador">
+        <pattern value="/Reportes/reporteAnualTrabajador" />
+        <view-id value="/bv/reportes/reporteAnualTrabajador.xhtml" />
+    </url-mapping>
+      
+    <url-mapping id="reporteAnualTrabajadores">
+        <pattern value="/Reportes/reporteAnualTrabajadores" />
+        <view-id value="/bv/reportes/reporteAnualTrabajadores.xhtml" /> 
+    </url-mapping>  
+    
+    <url-mapping id="geolocalizacionBibliotecas">
+        <pattern value="/Reportes/geolocalizacionBibliotecas" />
+        <view-id value="/bv/reportes/geolocalizacionBibliotecas.xhtml" /> 
+    </url-mapping> 
+    
+    <url-mapping id="documentalListGn">
+        <pattern value="/Documental/ListGn" />
+        <view-id value="/bv/documental/documentalListGn.xhtml" />
+    </url-mapping>
+    
+    <url-mapping id="novedadAdd">
+        <pattern value="/Sociales/Admin" />
+        <view-id value="/bv/sociales/novedadAdd.xhtml" />
+    </url-mapping>
+    <url-mapping id="control">
+        <pattern value="/control/cont" />
+        <view-id value="/bv/control/log.xhtml" />
+    </url-mapping>
+    <url-mapping id="controlDoc">
+        <pattern value="/control/contDoc" />
+        <view-id value="/bv/control/logDocumental.xhtml" />
+    </url-mapping>
+    
+    <url-mapping id="publicacionList">
+        <pattern value="/Publicacion/List" />
+        <view-id value="/bv/publicacion/publicacionList.xhtml" />
+    </url-mapping>
+        
+</pretty-config>

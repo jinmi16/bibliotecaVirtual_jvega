@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputStylesheet name="css/responsive.css"/>
+        <h:outputScript name="primefaces-yourtheme/jquery/jquery-2.js"/>
+        <h:outputScript name="primefaces-yourtheme/jquery/jquery-plugins.js"/>
+        <h:outputScript name="js/login.js"/>
+    </h:head>
+    <h:body>
+        <f:event listener="#{usuarioBean.validaLogOut}" type="preRenderView"/>
+        <div class="container">
+            <div id="logo">
+                <h:graphicImage name="img/Logo-BNP-2.png"></h:graphicImage>
+            </div>
+            <div id="login-panel" class="center-align">
+                <div id="boton-cerrar">
+                    <h:graphicImage name="img/boton-x.png"></h:graphicImage>
+                </div>
+                <div class="titles">
+                    <h2 id="titulo1">INICIAR SESIÓN</h2>
+                </div>
+                <h:form>
+                    <div class="content-box" id="contenedor-usuario">
+                        <h:inputText styleClass="input-box txtUsuario" value="#{usuarioBean.usuario.USUARIO}"></h:inputText>
+                        <h:inputText styleClass="input-box txtEmail" style="display:none;"></h:inputText>
+                    </div>
+                    <div class="content-box" id="contenedor-contrasena">
+                        <h:inputSecret styleClass="input-box txtContrasena" value="#{usuarioBean.usuario.CONTRASENA}"></h:inputSecret>
+                    </div>
+                    <div class="content-text" style="padding: 10px 0 0 0;"  id="contenedor-pregunta">
+                        <p><a href="#" id="aPregunta">¿Olvidaste tu contraseña?</a></p>
+                    </div>
+                    <div class="content-box" id="contenedor-boton">
+                        <h:commandButton  styleClass="boton1 hvr-sweep-to-right btnLogin" action="#{usuarioBean.loginUsuario()}" value="INICIAR SESIÓN"></h:commandButton>
+                        <h:commandButton styleClass="boton1 hvr-sweep-to-right btnSend" value="ENVIAR" style="display:none;"></h:commandButton>
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </h:body>
+</html>

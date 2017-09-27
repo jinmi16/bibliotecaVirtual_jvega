@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <h:outputStylesheet name="primefaces-yourtheme/theme.css"/>        
+        <h:outputStylesheet name="primefaces-yourtheme/css/core-layout.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/font-awesome.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-font.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-layout.css"/>
+        <h:outputScript name="primefaces-yourtheme/js/perfect-scrollbar.js"/>
+        <h:outputScript name="primefaces-yourtheme/js/layout.js"/>
+        <h:outputScript name="js/validador.js"/>
+        <h:outputScript name="js/calendar_es.js"/>
+        
+
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+
+        <script type="text/javascript">
+            var currentMarker = null;
+
+            function handlePointClick(event) {
+                if (currentMarker === null) {
+                    document.getElementById('lat').value = event.latLng.lat();
+                    document.getElementById('lng').value = event.latLng.lng();
+
+                    currentMarker = new google.maps.Marker({
+                        position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+                    });
+
+                    PF('map').addOverlay(currentMarker);
+
+                    PF('dlg').show();
+                }
+            }
+
+            function markerAddComplete() {
+                var title = document.getElementById('title');
+                currentMarker.setTitle(title.value);
+                title.value = "";
+
+                currentMarker = null;
+                PF('dlg').hide();
+            }
+
+            function cancel() {
+                PF('dlg').hide();
+                currentMarker.setMap(null);
+                currentMarker = null;
+
+                return false;
+            }
+            function geocode() {
+                PF('map').geocode(document.getElementById('address').value);
+            }
+        </script>
+    </h:head>
+
+    <h:body>
+        <script src="http://maps.google.com/maps/api/js?sensor=true|false"
+        type="text/javascript"></script>
+        <p:growl id="messages" showDetail="true" />
+        <p:panelGrid columns="1" styleClass="Wid100">
+            <p:row>
+                <h:form prependId="false">
+
+
+                    <h:panelGrid columns="4" styleClass="Wid100" style="margin-bottom:10px" cellpadding="5">
+                        <p:outputLabel for="address" value="BUSCAR DIRECCION :" style="text-align: center" />
+                        <p:inputText id="address"  styleClass="Wid100"/>
+                        <p:commandButton value="Geocode" icon="ui-icon-search" onclick="geocode()" type="button" style="float: right; width: 80%" />
+                          <p:commandButton value="Aceptar"  icon="fa fa-thumbs-o-up" actionListener="#{geomapBean.closeDialog()}" style="padd" />
+                    </h:panelGrid>
+                                               <p:panelGrid columns="2">
+                              
+                               
+                            </p:panelGrid>
+
+                    <p:gmap id="map" center="#{geomapBean.centerGeoMap}" zoom="5" type="ROADMAP"  style="width:100%;height:500px" model="#{geomapBean.emptyModel}"
+                            onPointClick="handlePointClick(event);" widgetVar="map" >
+                        <p:ajax event="geocode" listener="#{geomapBean.onGeocode}" update="@this" />
+                    </p:gmap>
+
+                </h:form>
+                <p:dialog widgetVar="dlg" showEffect="fade">
+                    <h:form prependId="false">
+                        <h:panelGrid columns="2">
+                            <h:outputLabel for="title" value="Title:" />
+                            <p:inputText id="title" value="#{geomapBean.title}" />
+
+                            <f:facet name="footer">
+                                <p:commandButton value="Add" actionListener="#{geomapBean.addMarker}" update=":messages :frmDetalle:txtTitle :frmDetalle:txtLat :frmDetalle:txtLng" oncomplete="markerAddComplete()" />
+                                <p:commandButton value="Cancel" onclick="return cancel()" />
+                            </f:facet>
+                        </h:panelGrid>
+
+                        <h:inputHidden id="lat" value="#{geomapBean.lat}" />
+                        <h:inputHidden id="lng" value="#{geomapBean.lng}" />
+                    </h:form>
+                </p:dialog>
+            </p:row>
+            <p:row>
+                <h:form id="frmDetalle">
+                    <p:panelGrid  >
+                        <p:row>
+                            <p:column>
+                                <p:panelGrid columns="1">
+                                    <p:outputLabel for="txtTitle"  value="TITULO :" /> 
+                                    <p:inputText id="txtTitle" value="#{geomapBean.title}"/>
+                                </p:panelGrid>
+                            </p:column>
+                            <p:column>
+                                <p:panelGrid columns="1">
+                                    <p:outputLabel for="txtLat" value="LATITUD :"/>  
+                                    <p:inputText id="txtLat" value="#{geomapBean.lat}"/>
+                                </p:panelGrid>
+                            </p:column>
+                            <p:column>
+                                <p:panelGrid columns="1">
+                                    <p:outputLabel for="txtLng" value="lLONGITUD :"/> 
+                                    <p:inputText id="txtLng" value="#{geomapBean.lng}"/>
+                                     
+                                </p:panelGrid>
+                            </p:column>
+                            
+                            
+                        </p:row>
+                       
+                    </p:panelGrid>
+                </h:form>
+
+            </p:row>
+
+
+        </p:panelGrid>
+
+
+
+
+
+
+
+
+
+    </h:body>
+</html>
+

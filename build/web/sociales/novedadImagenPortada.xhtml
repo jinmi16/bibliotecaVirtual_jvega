@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet name="primefaces-yourtheme/theme.css"/>        
+        <h:outputStylesheet name="primefaces-yourtheme/css/core-layout.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/font-awesome.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-font.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-layout.css"/>
+        <h:outputScript name="primefaces-yourtheme/js/perfect-scrollbar.js"/>
+        <h:outputScript name="primefaces-yourtheme/js/layout.js"/>
+        <h:outputScript name="js/validador.js"/>
+        <h:outputScript name="js/calendar_es.js"/>
+        <title>Importar Archivos</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+            .ui-button-icon-left ui-icon ui-c fa fa-thumbs-o-up{
+                padding-left: 35%;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <h:form id="frmNovedad" >
+
+            <div class="Container100">
+                <p:panel header="Registrar novedad">
+                    <div class="ui-grid-row">
+                        <div class="Container100">   
+                            <p:growl id="gmsj" showDetail="true" />
+                            <p:fileUpload label="Selecione" uploadLabel="Subir"  cancelLabel="Cancelar"  fileUploadListener="#{archivoBean.handleFileUpload}" 
+                                          mode="advanced" dragDropSupport="false" multiple="true" fileLimitMessage="Solo se permite un archivo"
+                                          sizeLimit="524288000" fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png)$/"
+                                          invalidFileMessage="Archivo no permitido" auto="false" previewWidth="150"
+                                          invalidSizeMessage="Tamaño del archivo excedido " styleClass="Wid80" />
+
+                            <p:commandButton value="Aceptar"  icon="fa fa-thumbs-o-up" actionListener="#{archivoBean.closeDialog()}" styleClass="Wid100"  />
+                        </div>
+                    </div>
+                </p:panel>
+            </div>          
+            <p:separator/>
+
+        </h:form>
+
+    </h:body>
+
+</html>

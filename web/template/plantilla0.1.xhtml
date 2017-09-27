@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsf/core">
+    <h:head>
+        <link rel="icon" href="resources/img/bv.ico" type="image/ico"/>
+        <h:outputStylesheet name="primefaces-yourtheme/theme.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/charts/charts.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/core-layout.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/font-awesome.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-font.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-layout.css"/>
+        <h:outputScript name="primefaces-yourtheme/charts/charts.js"/>
+        <h:outputScript name="primefaces-yourtheme/js/ripple-effect.js"/>
+        <h:outputScript name="primefaces-yourtheme/js/perfect-scrollbar.js"/>
+        <h:outputScript name="primefaces-yourtheme/js/layout.js"/>
+        <h:outputScript name="js/validador.js"/>
+        <h:outputScript name="js/calendar_es.js"/>
+        <title> BNP | Biblioteca Virtual </title>
+    </h:head>
+    <h:body>
+        <style>
+            .ui-growl {
+                right:10px !important;
+                top:40px !important;
+                width:350px !important;
+            }
+            .ui-growl-item {
+                background-color:#FBFCFD;
+                border:2px solid #black;
+                border-radius:3px;
+                padding:20px !important;
+            }
+            .ui-growl-message {
+                color:#D1626C !important;
+                font-size:17px !important;
+                line-height:20px !important;
+                width:235px !important;
+            }
+            .ui-growl-item-container {
+                opacity:1;
+                padding:14px;
+            }
+            .CabeceraBiblioteca{
+                width: 50%;
+                color: #FBFCFD;
+                text-align: right;
+                float: right;
+                margin-right: 2%;
+            }
+
+        </style>
+
+        <f:event listener="#{usuarioBean.validaLogin}" type="preRenderView"/>
+        <p:growl id="gMensaje" for="gMensaje" showDetail="true" life="700000" widgetVar="gMensaje" escape="false" />
+
+        <div id="layout-topbar">
+            <div id="logo" class="Fleft">
+                <a href="/BibliotecaVirtual/principal"><img src="http://bdigital.bnp.gob.pe:8080/Bvirtual/bv/javax.faces.resource/img/logotipo_bv.png" class="Fleft"/></a>
+                <a id="mobile-menu-button" class="Fright ShowOnMobile ripplelink Unselectable ShadowEffect"><i style="position:relative;top:4px;" class="fa fa-bars"></i></a>
+            </div>
+            <div class="ShowOnDesktop" style="position:absolute;margin-top:8px;margin-left:250px;">
+                <ui:insert name="breadcumb">
+
+                </ui:insert>
+            </div>
+            <div class="CabeceraBiblioteca">
+
+                <p><h2> <p:outputLabel value="#{usuarioBean.nom_Biblioteca.toUpperCase()}" style="color: white;font-weight: bold;"/></h2></p>
+            </div>
+
+        </div>
+        <div id="wrapper">
+            <div id="wrapperIndent">
+                <div class="Animated05" id="layout-menu-cover">
+                    <h:form>
+                        <ul class="layout-menu">
+                            <li>
+                                <a class="menulink ripplelink">
+                                    <i class="icon-round58 Fs40"></i>
+                                    <span class="Fs18"><h:outputText value="#{usuarioBean.personal.NOMBRES}"/><i class="fa fa-sort-desc Fright Fs20"></i><br /><span class="Fs12 FontRobotoLight"><h:outputText value="#{usuarioBean.tipoUsuario}"/></span></span>
+                                </a>
+                                <ul>
+                                    <li><h:outputLink value="/BibliotecaVirtual/bv/personal/miCuenta.xhtml" styleClass="menulink ripplelink"><i class="icon-user158 Fs16"></i> Mi Cuenta</h:outputLink></li>
+                                    <li><h:outputLink value="/BibliotecaVirtual/bv/usuario/contrasenaUpd.xhtml" styleClass="menulink ripplelink"><i class="icon-underline6 Fs16"></i> Cambiar Contraseña</h:outputLink></li>
+                                    
+                                    <li><h:outputLink rendered="#{usuarioBean.representante}" value="/BibliotecaVirtual/bv/biblioteca/bibliotecaAdd.xhtml" styleClass="menulink ripplelink"><i class="icon-underline6 Fs16">
+                                                <f:param name="UPD" value="1" />           
+                                            </i> Modificar datos biblioteca 
+                                        </h:outputLink></li>
+                                    <li><p:commandLink action="#{usuarioBean.cierraSesion}" styleClass="menulink ripplelink"><i class="icon-thermostat1 Fs16"></i> Cerrar Sesión</p:commandLink></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </h:form>
+                    <div class="Separator"></div>
+                    <ul id="j_idt14" class="layout-menu rio-menu">
+                        <li id="rm_theme" role="menuitem">
+                            <a href="#" class="menulink ripplelink">
+                                <i class="icon-work3"></i> Documental</a>
+                            <ul role="menu">
+                                <ui:repeat value="#{documentalBean.listPerfilDocumental}" var="x">
+                                    <li id="rm_sample" role="menuitem">
+                                        <h:outputLink styleClass="menulink ripplelink" value="/BibliotecaVirtual/Documental/List">
+                                            <f:param name="ID_PERFIL_DOCUMENTAL" value="#{x.ID_PERFIL_DOCUMENTAL}" />
+                                            <f:param name="PERFIL_DOCUMENTAL" value="#{x.PERFIL_DOCUMENTAL}" />
+                                            <i class="fa fa-ellipsis-h"></i>
+                                            <i class="#{x.ICONO}"></i> #{x.PERFIL_DOCUMENTAL}</h:outputLink>
+                                    </li>
+                                </ui:repeat>
+                            </ul>
+                        </li>
+                        <li id="rm_default" role="menuitem">
+                            <a href="#" class="menulink ripplelink"><i class="fa fa-database"></i>Configuración</a>
+                            <ul role="menu">
+                                <li id="rm_empty" role="menuitem">
+                                    <h:outputLink styleClass="menulink ripplelink" value="/BibliotecaVirtual/Autor/List">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-user"></i> Autores</h:outputLink>
+                                </li>
+                                <li id="rm_login" role="menuitem">
+                                    <h:outputLink rendered="false" styleClass="menulink ripplelink" value="login-2.html">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-sitemap"></i> Colecciones</h:outputLink>
+                                </li>
+                                <li id="rm_error" role="menuitem">
+                                    <h:outputLink rendered="#{usuarioBean.administrador}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Biblioteca/List">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-university"></i> Bibliotecas</h:outputLink>
+                                </li>
+                                <li id="rm_access" role="menuitem">
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Personal/List">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-users"></i> Personal</h:outputLink>
+                                </li>
+                                <li id="rm_404" role="menuitem">
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Usuario/List">
+
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-user-plus"></i> Usuarios</h:outputLink>
+                                </li>
+                                <li id="rm_405" role="menuitem">
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Biblioteca/ControlDocumental" >
+
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-user-plus"></i> Control Documental</h:outputLink>
+                                </li>
+                                <li id="rm_415" role="menuitem">
+
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Perfiles/Admin">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-user-plus"></i>Detalle PD</h:outputLink>
+                                </li>
+                                <li id="rm_416" role="menuitem">
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Sociales/Admin">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-gears"></i>Novedades</h:outputLink>
+                                </li>
+
+                                <li id="rm_417" role="menuitem">
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Publicacion/List">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-gears"></i>Documental Publicado</h:outputLink>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li id="rm_default" role="menuitem">
+                            <a href="#" class="menulink ripplelink"><i class="fa fa-bar-chart"></i> Reportes</a>
+                            <ul role="menu">
+                                <li id="rm_empty" role="menuitem">
+                                    <h:outputLink styleClass="menulink ripplelink" value="/BibliotecaVirtual/Reportes/reporteDiario">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-user"></i> Reporte Diario</h:outputLink>
+                                </li>
+                                <li id="rm_login" role="menuitem">
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Reportes/reporteRangoTrabajador">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-sitemap"></i> Rango por Trabajador</h:outputLink>
+                                </li>                                
+                                <li id="rm_access" role="menuitem">
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Reportes/reporteAnualTrabajadores">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-users"></i> Estadisticas Grupales</h:outputLink>
+                                </li>
+                                <li id="rm_access" role="menuitem">
+                                    <h:outputLink rendered="#{usuarioBean.administrador}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/Reportes/geolocalizacionBibliotecas">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-users"></i>Mapa Bibliotecas</h:outputLink>
+                                </li>
+                                <li id="rm_416" role="menuitem">
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/control/cont">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-gears"></i>Log Configuracion
+                                    </h:outputLink>
+                                </li>
+                                <li id="rm_416" role="menuitem">
+
+                                    <h:outputLink rendered="#{usuarioBean.representante}" styleClass="menulink ripplelink" value="/BibliotecaVirtual/control/contDoc">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                        <i class="fa fa-gears"></i>Log Documental
+                                    </h:outputLink>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="Separator"></li>
+                    </ul>
+                </div>
+                <div id="layout-portlets-cover">
+                    <div class="Container100">
+                        <div class="ContainerIndent">
+                            <div class="Card ShadowEffect TexAlCenter">
+                                <p:messages for="gMsj" showDetail="true" autoUpdate="true"/>
+                                <ui:insert name="content">Content</ui:insert>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FOOTER  -->
+                    <h:form id="footer">
+                        <div class="Container100">
+                            <div class="ContainerIndent">
+                                <div class="Card ShadowEffect">
+                                    <div class="Container100" style="" id="footerlinks">
+                                        <a href="#" class="DispInlBlock FontSourceSansLight Blue Fs12 Fleft HoverEffect">TERMINOS Y CONDICIONES</a>
+                                        <span class="Fleft BoldGray Fs12" style="padding:0px 5px;">|</span>
+                                        <p:commandLink id="download" value="MANUALES" ajax="false" onclick="Primefaces.monitorDownload(start, stop);" >
+
+                                        </p:commandLink>
+                                        <a href="#" class="DispInlBlock FontSourceSansLight Blue Fs12 Fleft HoverEffect">MANUALES</a>
+                                        <span class="Fleft BoldGray Fs12" style="padding:0px 5px;">|</span>
+                                        <a href="#" class="DispInlBlock FontSourceSansLight Blue Fs12 Fleft HoverEffect">BNP</a>
+                                        <div class="EmptyBox10 ShowOnMobile"></div>
+                                        <span class="DispInlBlock FontSourceSansLight BoldGray Fs12 Fright HoverEffect TexAlRight FloatNoneOnMobile"> Biblioteca Nacional del Perú | Biblioteca Virtual</span>
+                                    </div>
+                                    <div class="EmptyBox10"></div>
+                                    <div class="Container50 Responsive100">
+                                        <img src="/BibliotecaVirtual/resources/img/logotipo_mobile.png" style="height:20px;" class="" />
+                                        <div class="EmptyBox10"></div>
+                                        <span class="DispBlock Wid100 FontSourceSansLight BoldGray Fs12 HoverEffect">Telefono +51 1 5136900 - Anexo 7148
+                                            <br /> <a href="http://bvirtual.bnp.gob.pe" target="_blank">bvirtual.bnp.gob.pe</a>
+                                        </span>
+                                    </div>
+                                    <div class="Container50 Responsive100">
+                                        <div class="DispInlBlock Fright">
+                                            <a href="http://www.facebook.com/biblioteca.nacional.peru" class="Blue Fs30"><i class="fa fa-facebook-square"></i></a>
+                                            <a href="https://plus.google.com/113668574979185414399" class="Blue Fs30"><i class="fa fa-google-plus-square"></i></a>
+                                            <a href="https://www.youtube.com/channel/UC4xK01JRikS3iSt818L7dRQ" class="Blue Fs30"><i class="fa fa-youtube-square"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+                
+                <p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+                    <f:facet name="default">
+                        <h:outputText value="Status: StandBy" />
+                    </f:facet>
+
+                    <f:facet name="start">
+                        <p:graphicImage name="img/preloader2.gif" />
+                    </f:facet>
+
+                    <f:facet name="complete">
+                        <h:outputText value="Status: Completed" />
+                    </f:facet>
+                </p:ajaxStatus>
+
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                <p:dialog style="background:none;"  widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                    <p:graphicImage name="img/preloader2.gif" />
+                </p:dialog>
+
+            </div>
+        </div>
+    </h:body>
+</html>

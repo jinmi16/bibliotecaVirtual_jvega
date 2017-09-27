@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Sociales" url="#" />
+            <p:menuitem value="Registro" url="/Sociales/Admin" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="1">
+            <p:menuitem value="Listado" outcome="novedadList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Nuevo" outcome="novedadAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+          
+        </p:tabMenu>
+
+        <p:panel header="Registrar novedad" >
+            <h:form id="frmNovedad">
+                <p:panelGrid id="grdNovedad">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Titulo corto :"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText value="#{novedadBean.novedad.TITULO_CORTO}" styleClass="Wid100"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Descripcion corta :"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText value="#{novedadBean.novedad.DESCRIPCION}" styleClass="Wid100"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Imagen de home :"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtImgHome" widgetVar="txtImgHome" value="#{novedadBean.imagenHome.URL_NOVEDAD}" disabled="true" styleClass="Wid100" />                            
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-plus" actionListener="#{novedadBean.abrirDlgImagenPortada()}" title="Abrir dialogo">
+                                <p:ajax event="dialogReturn" listener="#{novedadBean.onReturnNovedadHome}" />
+                            </p:commandButton>
+                        </p:column>                        
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Imagen de Novedad :"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtImgHome2" widgetVar="txtImgHome2" value="#{novedadBean.imagenHome2.URL_NOVEDAD}" disabled="true" styleClass="Wid100" />                            
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-plus" actionListener="#{novedadBean.abrirDlgImagenPortadaAccion()}" title="Abrir dialogo">
+                                <p:ajax event="dialogReturn" listener="#{novedadBean.onReturnNovedadHome2}" />
+                            </p:commandButton>
+                        </p:column>                        
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Titulo completo :"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText value="#{novedadBean.novedad.TITULO_COMPLETO}"  styleClass="Wid100"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Contenido :"/>
+                        </p:column>
+                        <p:column>
+                            <p:editor id="editor" widgetVar="editorWidget" controls="bold italic font size style justify color alignleft center alignright cut copy" value="#{novedadBean.novedad.CONTENIDO}" width="600" />
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Fecha de la novedad :"/>
+                        </p:column>
+                        <p:column>                                    
+                            <p:calendar locale="es" id="txtFechaNovedad" value="#{novedadBean.novedad.FECHA_NOVEDAD}" pattern="dd-MM-yyyy" mask="true" styleClass="Wid100Imp txtFechaCopyright">
+                                <f:convertDateTime type="date"  dateStyle="short" pattern="dd-MM-yyyy"/>
+                            </p:calendar>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Activo en web :"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio id="rdContenido" value="#{novedadBean.novedad.ACTIVO}" >
+                                <f:selectItem itemLabel="Si" itemValue="1" />
+                                <f:selectItem itemLabel="No" itemValue="0" />                                        
+                            </p:selectOneRadio>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Mostrar en index :" />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio id="rdActivo" value="#{novedadBean.novedad.MOSTAR_INICIO}" >
+                                <f:selectItem itemLabel="Si" itemValue="1" />
+                                <f:selectItem itemLabel="No" itemValue="0" />                                        
+                            </p:selectOneRadio>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Seleccione imagenes :" />
+                        </p:column>
+                        <p:column>
+                            <p:dataList id="listContenidos" widgetVar="listContenidos"  value="#{novedadBean.listaImagenes2}"  var="u" emptyMessage="No se han agregado aún." itemType="circle">
+                               #{u.URL_NOVEDAD}
+                            </p:dataList>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-plus" actionListener="#{novedadBean.abrirDlgImagenesDetalles()}" title="Abrir dialogo">
+                                <p:ajax event="dialogReturn" listener="#{novedadBean.onReturnFromdocumentalUpd}" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:spacer/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-plus" value="Grabar" actionListener="#{novedadBean.agegarNovedad()}" styleClass="Wid100" />
+                        </p:column>
+                    </p:row>
+
+
+                </p:panelGrid>
+                
+
+            </h:form>
+
+        </p:panel>
+
+    </ui:define>
+
+</ui:composition>

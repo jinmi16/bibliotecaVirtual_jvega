@@ -1,0 +1,29 @@
+$(document).ready(function(){
+    $(".txtUsuario").click();
+    $("#aPregunta").click(function(){
+       $(".txtUsuario").css({'display':'none'});
+       $(".txtContrasena").css({'display':'none'});
+       $(".btnLogin").css({'display':'none'});
+       $("#contenedor-pregunta").css({'display':'none'});
+       $("#contenedor-contrasena").css({'display':'none'});
+       $(".txtEmail").css({'display':'block'});
+       $(".btnSend").css({'display':'block'});
+       $("#titulo1").html("RECUPERAR CONTRASEÑA");
+       $("#login-panel").animate({'height':'280px'});
+       $("#boton-cerrar").css({'display':'block'});
+       $(".txtUsuario").val('');
+       $(".txtContrasena").val('');
+    });
+    $("#boton-cerrar").click(function(){
+       $(".txtUsuario").css({'display':'block'});
+       $(".txtContrasena").css({'display':'block'});
+       $(".btnLogin").css({'display':'block'});
+       $("#contenedor-pregunta").css({'display':'block'});
+       $("#contenedor-contrasena").css({'display':'block'});
+       $(".txtEmail").css({'display':'none'});
+       $(".btnSend").css({'display':'none'});
+       $("#titulo1").html("INICIAR SESIÓN");
+       $("#login-panel").animate({'height':'350px'});
+       $("#boton-cerrar").css({'display':'none'});
+    });
+ });

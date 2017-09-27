@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Control Documental" url="#" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <f:metadata>
+
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{perfilDocumentalDetalleBean.perfilControl}" />
+
+
+    </f:metadata>
+
+
+    <ui:define name="content">
+        <script>
+            function pasarPagina(url) {
+                window.open(url, '', 'width=auto,height=auto');
+            }
+        </script>
+
+        <h:form id="frmControl">
+            <f:event listener="#{perfilDocumentalDetalleBean.listarTablaxPerfil()}" type="preRenderView"/>
+            <p:panelGrid styleClass="Wid60" columns="4">
+                <p:column>
+                    <p:outputLabel value="Perfil"/>
+                </p:column>
+                <p:column>
+                    <p:selectOneMenu id="perfilControl"
+                                     filter="false" 
+                                     widgetVar="cboperfilControl" 
+                                     value="#{perfilDocumentalDetalleBean.perfilControl}" styleClass="Wid100Imp">
+                        <p:ajax listener="#{perfilDocumentalDetalleBean.listarTablaxPerfil()}"/>
+                        <f:selectItem itemLabel="todos" itemValue="-1" noSelectionOption="true"/>
+                        <f:selectItems value="#{perfilDocumentalDetalleBean.cboPerfiles}"/>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column>
+                    <p:outputLabel value="Estados"/>
+                </p:column>
+                <p:column>
+                    <p:selectOneMenu id="estadoControl"
+                                     filter="false" 
+                                     widgetVar="estadoControl" 
+                                     value="#{perfilDocumentalDetalleBean.estadoContRecSelec}" styleClass="Wid100Imp">
+                        <p:ajax listener="#{perfilDocumentalDetalleBean.listarTablaxPerfil()}"/>
+                        <f:selectItem itemLabel="Seleccione un estado" itemValue="-1" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="Controlado" itemValue="4" noSelectionOption="true"/>
+                        <f:selectItem itemLabel="Observado" itemValue="5" noSelectionOption="true"/>
+                        <!--f:selectItems value="#{perfilDocumentalDetalleBean.cboEstadoControlRecurso}"/-->
+                    </p:selectOneMenu>
+                </p:column>
+
+
+
+            </p:panelGrid>
+
+            <p:dataTable var="cd" id="tblControlDocumental" 
+                         widgetVar="tblControlDocumental"
+                         value="#{perfilDocumentalDetalleBean.lazymodel}" scrollable="true" 
+                         scrollWidth="100%" scrollHeight="600" frozenRows="0" 
+                         paginator="true" rows="100" rowsPerPageTemplate="80,100,150"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                         lazy="true" emptyMessage="No se encontraron registros."
+                         filteredValue="#{perfilDocumentalDetalleBean.filterDocumental}">
+
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <p:fragment autoUpdate="true">
+                            <h:outputText value="Buscar: "/>
+                            <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..." value="#{perfilDocumentalDetalleBean.query}"/>
+                            <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" value="Filtrar" actionListener="#{perfilDocumentalDetalleBean.accionFiltrar()}" />
+                        </p:fragment>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="VINCULAR"  width="60" style="text-align: center" filterStyle="display:none" filterBy="#{cd.ID_DOCUMENTAL}" filterMatchMode="contains" rendered="#{perfilDocumentalDetalleBean.mostrarVincular}">
+
+                    <p:commandButton  icon="fa fa-unlink" actionListener="#{perfilDocumentalDetalleBean.mostrarCarpetaUbicacion(cd.OTRO,cd.URL)}">
+
+                        <f:setPropertyActionListener value="#{cd}"  target="#{perfilDocumentalDetalleBean.documentalPnlControl}"  />
+                    </p:commandButton>
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{cd.ID_DOCUMENTAL}" filterMatchMode="contains" headerText="DETALLE" width="6%" style="text-align: center;">
+                    <p:commandButton actionListener="#{documentalBean.cargaDataControl(cd.ID_DOCUMENTAL)}" icon="fa fa-search">
+                    </p:commandButton>
+                </p:column>
+                <p:column headerText="ID" width="60" style="text-align: center" filterStyle="display:none" filterBy="#{cd.ID_DOCUMENTAL}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.ID_DOCUMENTAL}"/>
+                </p:column>
+                <p:column headerText="COD. BARRAS"  style="text-align: center" filterStyle="display:none" filterBy="#{cd.OTRO}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.OTRO}"/>
+                </p:column>
+                <p:column headerText="TITULO" filterStyle="display:none" filterBy="#{cd.TITULO}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.TITULO}"/>
+                </p:column>
+                <p:column headerText="URL" filterStyle="display:none" filterBy="#{cd.URL}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.URL}"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </h:form>
+        <p:dialog styleClass="Wid60Imp" header="Documental Seleccionado" id="dlgDocumental" widgetVar="dlgDocumental"  modal="true" showEffect="fade" hideEffect="fade">
+            <h:form>
+                <p:scrollPanel mode="native" style="height:500px">
+                    <p:panelGrid style="text-align:left;margin:0 auto;" columns="2">
+                        <h:outputText value="ID DOCUMENTAL: " />
+                        <h:outputText value="#{documentalBean.dgn.ID_DOCUMENTAL}" />
+                        <h:outputText value="TIPO CÓDIGO: " />
+                        <h:outputText value="#{documentalBean.dgn.TIPO_OTRO}" />
+                        <h:outputText value="CÓDIGO: " />
+                        <h:outputText value="#{documentalBean.dgn.OTRO}" />
+                        <h:outputText value="TITULO:" />
+                        <h:outputText value="#{documentalBean.dgn.TITULO}" />
+                        <h:outputText value="AUTORES: "/>
+                        <p:dataList value="#{documentalBean.listdetautores}"  var="a" emptyMessage="No hay autores asignadas." itemType="circle">
+                            #{a.APELLIDO_PATERNO} #{a.APELLIDO_MATERNO}, #{a.NOMBRE}
+                        </p:dataList>
+                        <h:outputText value="EDITORIAL: " />
+                        <h:outputText value="#{documentalBean.dgn.EDITORIAL}" />
+                        <h:outputText value="FECHA PUBLICACIÓN: " />
+                        <h:outputText value="#{documentalBean.dgn.FECHA_PUBLICACION}" />
+                        <h:outputText value="COLECCIÓN: "/>
+                        <p:dataList value="#{documentalBean.listdetcoleccion}"  var="c" emptyMessage="No hay colecciones asignadas." itemType="circle">
+                            #{c.DESCRIPCION}
+                        </p:dataList>
+                        <h:outputText value="SERIE: "/>
+                        <p:dataList value="#{documentalBean.listdetserie}"  var="s" emptyMessage="No hay series asignadas." itemType="circle">
+                            #{s.SERIE}
+                        </p:dataList>
+                        <h:outputText value="LENGUAJE: "/>
+                        <p:dataList value="#{documentalBean.listdetlenguaje}"  var="l" emptyMessage="No hay lenguajes asignadas." itemType="circle">
+                            #{l.LENGUAJE}
+                        </p:dataList>
+                        <h:outputText value="TEMAS: "/>
+                        <p:dataList value="#{documentalBean.listdettema}"  var="t" emptyMessage="No hay temas asignadas." itemType="circle">
+                            #{t.TEMA}
+                        </p:dataList>
+                        <h:outputText value="TIPO: " />
+                        <h:outputText value="#{documentalBean.dgn.TIPO}" />
+                        <h:outputText value="VERSIÓN:  " />
+                        <h:outputText value="#{documentalBean.dgn.TIENE_COMO_VERSION}" />
+                        <h:outputText value="COBERTURA ESPACIAL: " />
+                        <h:outputText value="#{documentalBean.dgn.COBERTURA_ESPACIAL}" />
+                        <h:outputText value="COBERTURA TEMPORAL: " />
+                        <h:outputText value="#{documentalBean.dgn.COBERTURA_TEMPORAL}" />
+                        <h:outputText value="CONTRIBUIDORES: "/>
+                        <p:dataList value="#{documentalBean.listdetcontribuidor}"  var="cn" emptyMessage="No hay contribuidores registrados." itemType="circle">
+                            #{cn.CONTRIBUIDOR}
+                        </p:dataList>
+                        <h:outputText value="DERECHOS: " />
+                        <h:outputText value="#{documentalBean.dgn.DERECHO}" />
+                        <h:outputText value="AUDIENCIA: " />
+                        <h:outputText value="#{documentalBean.dgn.AUDIENCIA}" />
+                        <h:outputText value="FORMATO: " />
+                        <h:outputText value="#{documentalBean.dgn.FORMATO}" />
+                        <h:outputText value="FORMATO EXTENSIÓN: " />
+                        <h:outputText value="#{documentalBean.dgn.FORMATO_EXTENSION}" />
+                        <h:outputText value="FORMATO MEDIO: " />
+                        <h:outputText value="#{documentalBean.dgn.FORMATO_MEDIO_DESCRIPCION}" />
+                        <h:outputText value="NÚMERO IMAGENES: " />
+                        <h:outputText value="#{documentalBean.dgn.NUMERO_PAGINAS}" />
+                    </p:panelGrid>
+                </p:scrollPanel>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgControl" widgetVar="dlgControl" header="Control Documental" modal="true" showEffect="explode" hideEffect="explode" closable="false" styleClass="Wid40">
+            <h:form id="frmDlgControl">
+                <p:panelGrid id="grdControl" styleClass="Wid100">
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="ID:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText value="#{perfilDocumentalDetalleBean.documentalPnlControl.ID_DOCUMENTAL}" disabled="true"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="TITULO:"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea value="#{perfilDocumentalDetalleBean.documentalPnlControl.TITULO}" disabled="true" style="width: 100%"/> 
+                        </p:column>
+                    </p:row>
+
+                    <p:row style="display:none;">
+                        <p:column>
+                            <p:outputLabel value="Visible en la Web :"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectManyMenu id="chkPublicar" showCheckbox="true" value="#{perfilDocumentalDetalleBean.publicar}"  styleClass="Wid70">
+                                <p:ajax listener="#{perfilDocumentalDetalleBean.mostrarMsgcheck()}"/>
+                                <f:selectItem itemLabel="Si" itemValue="1" />
+                                <f:selectItem itemLabel="No" itemValue="0" />
+                            </p:selectManyMenu>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Nombre del archivo :"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText value="#{perfilDocumentalDetalleBean.archivo}" styleClass="Wid100" disabled="true">
+                                <p:ajax event="keyup" update=":frmDlgControl:txtMuestra" listener="#{perfilDocumentalDetalleBean.handleKeyEvent}" />
+                            </p:inputText> 
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{perfilDocumentalDetalleBean.flipPdf}">
+                        <p:column>
+                            <p:outputLabel value="Carpeta Ubicacion :"  />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio  value="#{perfilDocumentalDetalleBean.tipoArchivo}" >
+                                <p:ajax listener="#{perfilDocumentalDetalleBean.cambiarLabel()}"/>
+                                <f:selectItem itemLabel="Flipping Book" itemValue="FlippingBook" />
+                                <f:selectItem itemLabel="PDF" itemValue="PDF" />
+
+                            </p:selectOneRadio>
+                        </p:column>
+                    </p:row>
+
+                    <p:row rendered="#{perfilDocumentalDetalleBean.fotMapPln}">
+                        <p:column>
+                            <p:outputLabel value="Carpeta Ubicacion :"  />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio  value="#{perfilDocumentalDetalleBean.tipoArchivo}" >
+                                <p:ajax listener="#{perfilDocumentalDetalleBean.cambiarLabel()}"/>
+                                <f:selectItem itemLabel="Fotos" itemValue="fotos" />
+                                <f:selectItem itemLabel="Mapas y Planos" itemValue="mapas_planos" />
+
+                            </p:selectOneRadio>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{perfilDocumentalDetalleBean.audVdo}">
+                        <p:column>
+                            <p:outputLabel value="Carpeta Ubicacion :"  />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneRadio  value="#{perfilDocumentalDetalleBean.tipoArchivo}" >
+                                <p:ajax listener="#{perfilDocumentalDetalleBean.cambiarLabel()}"/>
+                                <f:selectItem itemLabel="Youtube" itemValue="youtube" />
+                                <f:selectItem itemLabel="Audio" itemValue="audio" />
+                                <f:selectItem itemLabel="Video" itemValue="video" />
+
+
+                            </p:selectOneRadio>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Ruta Final :" style="font-weight: bold !important"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText  id="txtMuestra"  value="#{perfilDocumentalDetalleBean.archivofinal}" styleClass="Wid100" disabled="true"/>
+
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Observaciones:" style="font-weight: bold !important"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea  id="txtObs"  value="#{perfilDocumentalDetalleBean.observaciones}" styleClass="Wid100" />
+
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column>
+                            <p:spacer/>
+                        </p:column>
+                        <p:column> 
+                            <p:commandButton  value="Probar link" actionListener="#{perfilDocumentalDetalleBean.redirectUrl()}" />
+                            <p:commandButton  value="Observar" actionListener="#{perfilDocumentalDetalleBean.registrarObservacion()}" />
+                            <p:commandButton value="Aceptar" update=":frmControl:tblControlDocumental" actionListener="#{perfilDocumentalDetalleBean.registrarControlado()}"/>
+                            <p:commandButton value="Cancelar" update=":frmControl:tblControlDocumental :frmDlgControl:grdControl" actionListener="#{perfilDocumentalDetalleBean.limpiar()}" onclick="PF('dlgControl').hide();"/> 
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

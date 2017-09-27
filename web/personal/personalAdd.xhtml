@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+    
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Personal" url="#" />
+            <p:menuitem value="Registrar" url="/Personal/Add" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="1">
+            <p:menuitem value="Listado" outcome="personalList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Registrar" outcome="personalAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+        </p:tabMenu>
+        <p:separator />
+        <p:panel header="..:: REGISTRO DE PERSONAL ::.." style="center">
+            <h:form id="frmPersonalAdd">
+                <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" redisplay="false"/>
+
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-10">
+                            <h:panelGrid styleClass="Wid100" id="grid" columns="2" cellspacing="5" columnClasses="Wid20,Wid70">
+                                <p:outputLabel for="nombre" value="NOMBRES"/>
+                                <p:inputText id="nombre" value="#{personalB.personal.NOMBRES}" styleClass="Wid100" required="true"/>
+                                <p:outputLabel for="paterno" value="PATERNO"/>
+                                <p:inputText id="paterno" value="#{personalB.personal.PATERNO}" style="width:100% " required="true"/>
+                                <p:outputLabel for="materno" value="MATERNO"/>
+                                <p:inputText id="materno" value="#{personalB.personal.MATERNO}" style="width:100% " required="true"/>
+                                <p:outputLabel for="dni" value="DNI" />
+                                <p:inputMask mask="99999999" id="dni" value="#{personalB.personal.DNI}" style="width:100% " required="true"/>
+                                <p:outputLabel for="biblioteca" value="BIBLIOTECA"/>
+
+                                <p:selectOneMenu id="biblioteca" 
+                                                 filter="true" 
+                                                 widgetVar="cboBiblioteca" 
+                                                 value="#{personalB.personal.ID_BIBLIOTECA_MEDIADOR}" required="true" styleClass="Wid100Imp">
+                                    <f:selectItem itemLabel="Seleccione una biblioteca" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItems value="#{personalB.cboBiblioteca}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel for="cargo" value="CARGO" />
+                                <p:inputText id="cargo" value="#{personalB.personal.CARGO}" style="width:100% " required="true"/> 
+                                <p:outputLabel for="correo" value="CORREO"/>
+                                <p:inputText id="correo" value="#{personalB.personal.CORREO}" style="width:100% " required="true" validatorMessage="Formato de email invalido" requiredMessage="Please enter your email address.">
+                                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                </p:inputText> 
+                                <p:outputLabel for="updBiblioteca" value="TIPO USUARIO:"/>
+                                <p:selectOneMenu id="updBiblioteca"
+                                                 filter="true" 
+                                                 widgetVar="updIdTipoUsuario" 
+                                                 value="#{personalB.personal.idTipoUsuario}" required="true" styleClass="Wid100Imp">
+                                    <f:selectItem itemLabel="Seleccione un tipo de usuario" itemValue="-1" noSelectionOption="true"/>
+                                    <f:selectItems value="#{usuarioBean.cboTipoUsuario}"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="representante" value="REPRESENTANTE"/>
+                                <p:selectBooleanCheckbox id="representante"  value="#{personalB.personal.REPRESENTANTE}" style="width:100%" />
+                                <p:outputLabel  value=""/>
+                                <p:commandButton value="REGISTRAR" update=":frmPersonalAdd:grid"   action="#{personalB.crearPersonal}" style="width:100% " />
+
+                            </h:panelGrid>
+
+
+
+                        </div>
+                        <div class="ui-grid-col-6">
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

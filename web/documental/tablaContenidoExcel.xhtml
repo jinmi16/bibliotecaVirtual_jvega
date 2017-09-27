@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <h:outputStylesheet name="primefaces-yourtheme/theme.css"/>        
+        <h:outputStylesheet name="primefaces-yourtheme/css/core-layout.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/font-awesome.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-font.css"/>
+        <h:outputStylesheet name="primefaces-yourtheme/css/bv-layout.css"/>
+        <h:outputScript name="primefaces-yourtheme/js/perfect-scrollbar.js"/>
+        <h:outputScript name="primefaces-yourtheme/js/layout.js"/>
+        <h:outputScript name="js/validador.js"/>
+        <h:outputScript name="js/calendar_es.js"/>
+        <title>IMPORTAR TABLA DE CONTENIDO DE EXCEL</title>
+        <style type="text/css">
+            .ui-widget {
+                font-size: 90%;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <h:form id="frmTablaContenido">
+
+            <div class="Container100">
+                <div class="ui-grid-row">
+                    <div class="Container70">
+                        <p:fileUpload label="Importar" uploadLabel="Subir" cancelLabel="Cancelar"  fileUploadListener="#{tcBean.handleFileUpload}" mode="advanced" dragDropSupport="false"
+                                      sizeLimit="524288000" fileLimit="1" allowTypes="/(\.|\/)(xls|xlsx)$/"
+                                      invalidFileMessage="Archivo no permitido"
+                                      invalidSizeMessage="Tamaño del archivo excedido " styleClass="Wid80" />
+                    </div>
+                    <div class="Containe30">
+                        <p:panelGrid columns="2">
+                            <p:commandButton value="Aceptar"  icon="fa fa-thumbs-o-up" actionListener="#{tcBean.closeDialog()}" style="padd" />
+                            <p:messages id="msgExcel" autoUpdate="true" closable="true" showDetail="true" />
+                        </p:panelGrid>
+
+                    </div>
+                </div>
+            </div>          
+            <p:separator/>
+        </h:form>
+    </h:body>
+</html>
+

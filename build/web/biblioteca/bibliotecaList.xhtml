@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Biblioteca" url="#" />
+            <p:menuitem value="Listado" url="/Biblioteca/List" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="0">
+            <p:menuitem value="Listado" outcome="bibliotecaList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Registrar" outcome="bibliotecaAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+        </p:tabMenu>
+        <p:separator />
+        <h:form id="formListBiblioteca">
+            <p:dataTable lazy="false" id="tblBiblioteca" 
+                         var="biblioteca" 
+                         value="#{bibliotecaBean.listBiblioteca}" 
+                         rows="50"
+                         paginator="true"
+                         paginatorPosition="top"
+                         widgetVar="tblBiblioteca" 
+                         emptyMessage="No se encontraron bibliotecas." 
+                         filteredValue="#{bibliotecaBean.filterListBiblioteca}">
+
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Busque una biblioteca:" />
+                        <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..."/>
+                     <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" onclick="PF('tblBiblioteca').filter()" value="Filtrar"></p:commandButton>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.ID_BIBLIOTECA_MEDIADOR}" filterMatchMode="contains" headerText="ID" width="3%">
+                    <h:outputText value="#{biblioteca.ID_BIBLIOTECA_MEDIADOR}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.CODIGO_SNB}" filterMatchMode="contains" headerText="SNB" width="7%">
+                    <h:outputText value="#{biblioteca.CODIGO_SNB}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.NOMBRE_BIBLIOTECA}" filterMatchMode="contains" headerText="Nombre" width="13%">
+                    <h:outputText value="#{biblioteca.NOMBRE_BIBLIOTECA}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.DIRECCION}" filterMatchMode="contains" headerText="Dirección" width="12%">
+                    <h:outputText value="#{biblioteca.DIRECCION}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.EMAIL}" filterMatchMode="contains" headerText="Email" width="12%">
+                    <h:outputText value="#{biblioteca.EMAIL}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.NOMBRE_INSTITUCION}" filterMatchMode="contains" headerText="Institución" width="13%">
+                    <h:outputText value="#{biblioteca.NOMBRE_INSTITUCION}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.ID_INSTITUCION_MEDIADOR}" filterMatchMode="contains" headerText="Institución" width="13%" style="display:none">
+                    <h:outputText value="#{biblioteca.ID_INSTITUCION_MEDIADOR}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.REGION}" filterMatchMode="contains" headerText="Region" width="7%">
+                    <h:outputText value="#{biblioteca.REGION}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.ID_REGION}" filterMatchMode="contains" headerText="Region" width="7%" style="display:none">
+                    <h:outputText value="#{biblioteca.ID_REGION}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.PROVINCIA}" filterMatchMode="contains" headerText="Provincia" width="7%">
+                    <h:outputText value="#{biblioteca.PROVINCIA}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.ID_PROVINCIA}" filterMatchMode="contains" headerText="Provincia" width="7%" style="display:none">
+                    <h:outputText value="#{biblioteca.ID_PROVINCIA}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.DISTRITO}" filterMatchMode="contains" headerText="Distrito" width="6%">
+                    <h:outputText value="#{biblioteca.DISTRITO}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.ID_DISTRITO}" filterMatchMode="contains" headerText="Distrito" width="6%" style="display:none">
+                    <h:outputText value="#{biblioteca.ID_DISTRITO}" />
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.ACTIVO}" filterMatchMode="contains" headerText="Activo" width="5%" style="text-align: center;">
+                    <p:selectBooleanCheckbox value="#{biblioteca.ACTIVO}" disabled="true"></p:selectBooleanCheckbox>
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.CODIGO_SNB}" filterMatchMode="contains" headerText="Editar" width="5%" style="text-align: center;">
+                    <p:commandButton update=":formListBiblioteca:grid" oncomplete="PF('dlbUpdBiblioteca').show()" icon="ui-icon-pencil">
+                        <f:setPropertyActionListener value="#{biblioteca}" target="#{bibliotecaBean.bibliotecaUpd}" />
+                    </p:commandButton>
+                </p:column>
+
+                <p:column filterStyle="display:none" filterBy="#{biblioteca.CODIGO_SNB}" filterMatchMode="contains" headerText="Eliminar" width="5%" style="text-align: center;">
+                    <p:commandButton ajax="true" update=":formListBiblioteca:tblBiblioteca :gMensaje" icon="ui-icon-trash" actionListener="#{bibliotecaBean.delBiblioteca(biblioteca)}">
+                        <p:confirm  header="Confirme la acción" message="¿Está seguro de realizar este cambio ? " icon="ui-icon-info"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+
+
+            <p:dialog closeOnEscape="true" header="..:: EDITAR BIBLIOTECA ::.." 
+                      widgetVar="dlbUpdBiblioteca" modal="true" showEffect="clip" 
+                      hideEffect="clip" resizable="false" closable="true">
+                <p:outputPanel id="grid" style="text-align:center;">
+                    <p:panelGrid  columns="2"  columnClasses="Wid30, Wid70">
+                        <h:outputLabel for="updSNB" value="SNB: " />
+                        <p:inputText id="updSNB" value="#{bibliotecaBean.bibliotecaUpd.CODIGO_SNB}" styleClass="Wid100"/>
+                        <h:outputLabel for="updNombre" value="NOMBRE DE BIBLIOTECA: " />
+                        <p:inputText id="updNombre" value="#{bibliotecaBean.bibliotecaUpd.NOMBRE_BIBLIOTECA}" styleClass="Wid100"/>
+                        <h:outputLabel for="updDireccion" value="DIRECCIÓN: " />
+                        <p:inputText id="updDireccion" value="#{bibliotecaBean.bibliotecaUpd.DIRECCION}" styleClass="Wid100"/>
+                        <h:outputLabel for="updEmail" value="EMAIL: " />
+                        <p:inputText id="updEmail" value="#{bibliotecaBean.bibliotecaUpd.EMAIL}" styleClass="Wid100"/>
+                        <h:outputLabel for="updInstitucion" value="INSTITUCIÓN: " />
+                        <p:selectOneMenu id="updInstitucion" 
+                                         filter="true"
+                                         widgetVar="updInstitucion"
+                                         value="#{bibliotecaBean.bibliotecaUpd.ID_INSTITUCION_MEDIADOR}" style="width: 100%">
+                            <f:selectItems value="#{institucionBean.comboAvanzado}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel for="updRegion" value="REGIÓN " />
+                        <p:selectOneMenu id="updRegion" value="#{bibliotecaBean.bibliotecaUpd.ID_REGION}" widgetVar="updRegion" style="width: 100%">
+                            <p:ajax listener="#{bibliotecaBean.cambiaUpdRegion()}" update="updProvincia updDistrito" />
+                            <f:selectItem itemLabel="Seleccione una region  ..." itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{bibliotecaBean.updRegion}" />
+                        </p:selectOneMenu>
+                        <h:outputLabel for="updProvincia" value="PROVINCIA: " />
+                        <p:selectOneMenu id="updProvincia" value="#{bibliotecaBean.bibliotecaUpd.ID_PROVINCIA}" widgetVar="updProvincia" style="width: 100%">
+                            <p:ajax listener="#{bibliotecaBean.cambiaUpdProvincia()}" update="updDistrito" />
+                            <f:selectItem itemLabel="Seleccione una provincia  ..." itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{bibliotecaBean.updProvincia}" />
+                        </p:selectOneMenu>
+                        <h:outputLabel for="updDistrito" value="DISTRITO: " />
+                        <p:selectOneMenu id="updDistrito" value="#{bibliotecaBean.bibliotecaUpd.ID_DISTRITO}" widgetVar="updDistrito" style="width: 100%">
+                            <f:selectItem itemLabel="Seleccione un distrito  ..." itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{bibliotecaBean.updDistrito}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel for="dominio" value="DOMINIO: " />
+                        <p:inputText  id="dominio" value="#{bibliotecaBean.bibliotecaUpd.URL}" styleClass="Wid100Imp" />
+
+                        <p:outputLabel for="directorio" value="RUTA A DIRECTORIO : " />
+                        <p:inputText  id="directorio" value="#{bibliotecaBean.bibliotecaUpd.DIRECTORIO}" styleClass="Wid100Imp" />
+
+                        <p:outputLabel for="updActivo" value="ACTIVO: " />
+                        <p:selectBooleanCheckbox id="updActivo" value="#{bibliotecaBean.bibliotecaUpd.ACTIVO}" disabled="false"></p:selectBooleanCheckbox>
+
+                        <p:outputLabel for="txtTituloEnMapa" value="TITULO EN MAPA:" />
+                        <p:inputText  id="txtTituloEnMapa" value="#{bibliotecaBean.bibliotecaUpd.TITULO_MAPA}" styleClass="Wid100Imp" />
+                        <p:outputLabel for="txtLatitud" value="LATITUD:" />
+                        <p:inputText  id="txtLatitud" value="#{bibliotecaBean.bibliotecaUpd.LATITUD}" styleClass="Wid100Imp" />
+                        <p:outputLabel for="txtLongitud" value="LONGITUD: " />
+                        <p:inputText  id="txtLongitud" value="#{bibliotecaBean.bibliotecaUpd.LONGITUD}" styleClass="Wid100Imp" />
+
+
+                        <p:outputLabel for="updBtn" value="" />
+
+                        <p:commandButton update=":formListBiblioteca:tblBiblioteca :gMensaje" 
+                                         styleClass="Wid60" 
+                                         id="updBtn"  
+                                         ajax="true"
+                                         icon="ui-icon-pencil" 
+                                         value="EDITAR EL REGISTRO" 
+                                         action="#{bibliotecaBean.updBiblioteca()}">
+                            <p:confirm header="Confirme la acción" message="¿Está seguro de actualizar este registro?" icon="ui-icon-info" />
+                        </p:commandButton>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="puff" hideEffect="puff">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

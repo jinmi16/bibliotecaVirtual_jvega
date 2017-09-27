@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Sociales" url="#" />
+            <p:menuitem value="Registro" url="/Sociales/Admin" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <style>
+        .TexAlCenter {
+            text-align: justify !important;
+        }
+    </style>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="0">
+            <p:menuitem value="Listado" outcome="novedadList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Nuevo" outcome="novedadAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+          
+        </p:tabMenu>
+
+        <h:form id="frmNovedadList">
+            <p:dataGrid var="nov" value="#{novedadBean.lstNovedad}" columns="3" layout="grid"
+                        rows="12" paginator="true" id="tblNovedades" 
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                        rowsPerPageTemplate="12">
+
+                <f:facet name="header">
+                    Lista de novedades
+                </f:facet>
+
+                <p:panel header="#{nov.TITULO_CORTO}" style="text-align:center;height: 330px">
+                    <h:panelGrid columns="1" style="width:100%">
+                        <img src="#{nov.URL_IMAGEN}" width="200px" height="200px"/>  
+                        <h:outputText value="Fecha : #{nov.s_FECHA_NOVEDAD}" />
+                        <p:panelGrid columns="2" style="margin: 0 auto">
+                            <p:commandLink  title="Ver Detalles" onclick="PF('dlgDetalle').show()" update=":frmNovedadList:detalle" >
+                                <i class="icon-round52 Fs25 Blue"></i>
+                                <f:setPropertyActionListener value="#{nov}" target="#{novedadBean.nov}" />
+                            </p:commandLink>
+                            <p:commandLink title="Borrar"  >
+                                <i class="fa fa-trash-o Fs25 Blue"></i>
+                                <p:confirm header="Confirmar" message="¿Estas seguro de borrar esta publicacion?" icon="ui-icon-alert" />
+                            </p:commandLink>
+                        </p:panelGrid> 
+                    </h:panelGrid>
+                </p:panel>
+
+            </p:dataGrid>  
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+
+            <p:dialog header="Detalles" widgetVar="dlgDetalle" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true"
+                      styleClass="Wid90Imp">
+                <p:scrollPanel id="detalle" style="width:95%;height:450px;margin: 0 auto;">
+                    <p:panelGrid  styleClass="texAlJustify">                            
+                        <p:row>
+                            <p:column> 
+                                <h:outputText value="Id:" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="Novedad ##{novedadBean.nov.ID_NOVEDADES}" style="color: orangered;font-weight: lighter"/>
+                            </p:column>
+                        </p:row>                                
+
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Titulo:" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{novedadBean.nov.TITULO_COMPLETO.toUpperCase()}" style="color:red" />
+                            </p:column>    
+
+                        </p:row>
+
+                        <p:row>
+                            <p:column colspan="2">
+                                <div class="SeparatorFull"></div>
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Descripción:" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{novedadBean.nov.DESCRIPCION}" escape="false"/>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column colspan="2">
+                                <div class="SeparatorFull"></div>
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Fecha:" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{novedadBean.nov.s_FECHA_NOVEDAD}" />
+                            </p:column>
+                        </p:row>
+
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Mostrar en Home:" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{novedadBean.nov.MOSTAR_INICIO}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Activo:" />
+                            </p:column>
+                            <p:column>
+                                <h:outputText value="#{novedadBean.nov.ACTIVO}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>
+                                <h:outputText value="Portada:" />
+                            </p:column>
+                            <p:column>
+                                <img src="#{novedadBean.nov.URL_IMAGEN}" width="200px" height="200px"/>
+                            </p:column>                            
+                        </p:row>
+                    </p:panelGrid>
+                </p:scrollPanel>
+            </p:dialog>
+
+        </h:form>
+
+
+
+    </ui:define>
+
+</ui:composition>
+
+
+

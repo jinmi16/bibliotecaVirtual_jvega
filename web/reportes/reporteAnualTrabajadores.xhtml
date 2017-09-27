@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Reportes" url="#" />
+            <p:menuitem value="Anual" outcome="reporteAnualTrabajadores.xhtml"/>
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="2">
+            <p:menuitem value="Día" outcome="reporteDiario.xhtml" styleClass="icon-list"/>
+            <p:menuitem value="Rango" outcome="reporteRangoTrabajadores.xhtml" styleClass="icon-googleplus"/>
+            <p:menuitem value="Anual" outcome="reporteAnualTrabajadores.xhtml" styleClass="icon-underline6"/>
+        </p:tabMenu>
+
+        <h:form id="frmReporteAnual">
+
+            <p:panel id="panel" header="..:: REPORTE DE PRODUCCION ANUAL POR TRABAJADOR  ::..">
+                <p:spinner min="2016" max="2050" value="#{reporteBean.anoActual}" styleClass="Wid20Imp MarRight20" style="margin-left:20px;"></p:spinner>
+                <p:commandButton icon="fa fa-search" action="#{reporteBean.crearModeloLineal()}"/>
+                <p:chart id="lineChart" type="line" model="#{reporteBean.lineModel1}" style="height:300px;" responsive="true">
+
+                </p:chart>
+
+            </p:panel>
+
+        </h:form>
+
+        <script>
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#3E98D3', '#EF3F61', '#2BB673', '#F15732'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#F5F5F5',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#666F77'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+            }
+
+        </script>
+        <style type="text/css">
+            .jqplot-target, .jqplot-axis {
+                color: #546E7A;
+            }
+        </style>
+
+    </ui:define>
+
+</ui:composition>

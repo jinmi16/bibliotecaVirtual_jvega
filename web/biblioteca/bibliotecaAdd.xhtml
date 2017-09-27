@@ -1,0 +1,241 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:metadata>
+        <f:viewParam name="UPD" value="#{bibliotecaBean.upd}" />        
+    </f:metadata>
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Biblioteca" url="#" />
+            <p:menuitem value="Registrar" url="/Biblioteca/Add" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <script src="http://maps.google.com/maps/api/js?sensor=true|false"
+        type="text/javascript"></script>
+        <script type="text/javascript">
+            var currentMarker = null;
+
+            function handlePointClick(event) {
+                if (currentMarker === null) {
+                    document.getElementById('lat').value = event.latLng.lat();
+                    document.getElementById('lng').value = event.latLng.lng();
+
+                    currentMarker = new google.maps.Marker({
+                        position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+                    });
+
+                    PF('map').addOverlay(currentMarker);
+
+                    PF('dlg').show();
+                }
+            }
+
+            function markerAddComplete() {
+                var title = document.getElementById('title');
+                currentMarker.setTitle(title.value);
+                title.value = "";
+
+                currentMarker = null;
+                PF('dlg').hide();
+            }
+
+            function cancel() {
+                PF('dlg').hide();
+                currentMarker.setMap(null);
+                currentMarker = null;
+
+                return false;
+            }
+            function geocode() {
+                PF('map').geocode(document.getElementById('localizar').value);
+            }
+        </script>
+
+
+        <f:event listener="#{bibliotecaBean.listarBiblioteca()}" type="preRenderView"/>
+
+        <p:tabMenu activeIndex="1" rendered="#{bibliotecaBean.mostrarPestaniaListado}" >
+            <p:menuitem value="Listado" outcome="bibliotecaList.xhtml" styleClass="icon-list"  >
+            </p:menuitem>
+            <p:menuitem value="Registrar" outcome="bibliotecaAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+        </p:tabMenu>
+        <p:separator />    
+
+
+        <h:form id="frmAddBiblioteca">
+            <p:panel header="#{bibliotecaBean.titulo}" style="center">
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-10">
+                            <h:panelGrid columns="3" cellpadding="3" styleClass="Wid100" columnClasses="Wid20,Wid60,Wid10">
+                                <p:outputLabel for="advanced" value="INSTITUCIÓN: "  />
+                                <p:selectOneMenu required="true" id="advanced" 
+                                                 filter="true"
+                                                 widgetVar="cboInstitucion"
+                                                 value="#{bibliotecaBean.biblioteca.ID_INSTITUCION_MEDIADOR}"
+                                                 styleClass="Wid100Imp">
+                                    <f:selectItem itemLabel="Seleccione una institución" itemValue="-1" noSelectionOption="true" />
+                                    <f:selectItems value="#{institucionBean.comboAvanzado}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton icon="ui-icon-plusthick" title="Crear Institución" onclick="PF('dlgInstitucion').show()"></p:commandButton>
+                                <p:outputLabel for="txtSBN" value="CÓDIGO SNB: "  />
+                                <p:inputText required="false" id="txtSBN" value="#{bibliotecaBean.biblioteca.CODIGO_SNB}" styleClass="Wid100"/>
+                                <p:outputLabel value=""  />
+                                <p:outputLabel for="txtNombre" value="NOMBRE DE BIBLIOTECA: "  />
+                                <p:inputText required="true" id="txtNombre" value="#{bibliotecaBean.biblioteca.NOMBRE_BIBLIOTECA}" styleClass="Wid100"/>
+                                <p:outputLabel value=""  />
+                                <p:outputLabel for="txtDireccion" value="DIRECCIÓN: "  />
+                                <p:inputText required="true" id="txtDireccion" value="#{bibliotecaBean.biblioteca.DIRECCION}" styleClass="Wid100"/>
+                                <p:outputLabel value=""  />
+                                <p:outputLabel for="txtEmail" value="CORREO ELECTRÓNICO: "  />
+                                <p:inputText  id="txtEmail" value="#{bibliotecaBean.biblioteca.EMAIL}" styleClass="Wid100">
+
+                                </p:inputText>
+                                <p:outputLabel value=""  />
+                                <p:outputLabel for="region" value="REGION: " />
+                                <p:selectOneMenu required="true" id="region" value="#{bibliotecaBean.biblioteca.ID_REGION}" widgetVar="wRegion" styleClass="Wid100Imp">
+                                    <p:ajax listener="#{bibliotecaBean.cambiaRegion}" update="provincia distrito" />
+                                    <f:selectItem itemLabel="Seleccione una región..." itemValue="-1" noSelectionOption="true" />
+                                    <f:selectItems value="#{bibliotecaBean.comboRegion}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value=""  />
+                                <p:outputLabel for="provincia" value="PROVINCIA: " />
+                                <p:selectOneMenu required="true" id="provincia" value="#{bibliotecaBean.biblioteca.ID_PROVINCIA}" widgetVar="wProvincia" styleClass="Wid100Imp">
+                                    <p:ajax listener="#{bibliotecaBean.cambiaProvincia}" update="distrito" />
+                                    <f:selectItem itemLabel="Seleccione una provincia..." itemValue="-1" noSelectionOption="true" />
+                                    <f:selectItems value="#{bibliotecaBean.comboProvincia}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value=""  />
+                                <p:outputLabel for="distrito" value="DISTRITO: " />
+                                <p:selectOneMenu required="true" id="distrito" value="#{bibliotecaBean.biblioteca.ID_DISTRITO}" widgetVar="wDistrito" styleClass="Wid100Imp">
+                                    <f:selectItem itemLabel="Seleccione un distrito..." itemValue="-1" noSelectionOption="true" />
+                                    <f:selectItems value="#{bibliotecaBean.comboDistrito}" />
+                                </p:selectOneMenu>
+                                <p:spacer/>
+                                <p:outputLabel for="dominio" value="DOMINIO: " />
+                                <p:inputText  id="dominio" value="#{bibliotecaBean.biblioteca.URL}" styleClass="Wid100Imp" placeholder="http://bvirtual.bnp.gob.pe/"/>
+                                <p:spacer/>
+                                <p:outputLabel for="directorio" value="RUTA A DIRECTORIO : " />
+                                <p:inputText  id="directorio" value="#{bibliotecaBean.biblioteca.DIRECTORIO}" styleClass="Wid100Imp"  placeholder="bnp/faces/"/>
+                                <p:spacer/>
+                                  <p:outputLabel  value="Perfil Documental"/>
+
+
+                                <p:selectCheckboxMenu
+                                    updateLabel="true"
+                                    label="Selecione Perfil"
+                                    id="perfilControl" 
+                                    filter="true" filterMatchMode="contains"
+                                    required="false"
+                                    widgetVar="cboperfilControl"
+                                    value="#{bibliotecaBean.selectedPerfiles}"
+                                    styleClass="Wid100Imp cboperfilControl">
+                                    
+                                    <f:selectItems  value="#{bibliotecaBean.cboPerfiles}" var="x" itemLabel="#{x.PERFIL_DOCUMENTAL}" itemValue="#{x.ID_PERFIL_DOCUMENTAL}"/>
+                                </p:selectCheckboxMenu>
+                            </h:panelGrid>
+                        </div>
+                    </div>
+                </div>
+            </p:panel>
+
+            <p:panel header="GEOLOCALIZACION EN MAPA" style="center" rendered="#{bibliotecaBean.verGeomap()}">
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-10">
+                            <p:panelGrid id="grdMap" columns="3"  styleClass="Wid100" columnClasses="Wid20,Wid60,Wid10">
+                                <p:outputLabel for="txtTituloEnMapa" value="TITULO EN MAPA:" />
+                                <p:inputText  id="txtTituloEnMapa" value="#{bibliotecaBean.biblioteca.TITULO_MAPA}" styleClass="Wid100Imp" />
+                                <p:commandButton icon="ui-icon-plusthick" title="Agregar Cooredanadas" onclick="PF('dlgGmap').show()"></p:commandButton>
+                                <p:outputLabel for="txtLatitud" value="LATITUD:" />
+                                <p:inputText  id="txtLatitud" value="#{bibliotecaBean.lat}" styleClass="Wid100Imp" />
+                                <p:spacer/>
+                                <p:outputLabel for="txtLongitud" value="LONGITUD: " />
+                                <p:inputText  id="txtLongitud" value="#{bibliotecaBean.lng}" styleClass="Wid100Imp" />
+
+
+                            </p:panelGrid>
+
+
+                        </div>
+                    </div>
+                </div>
+            </p:panel>
+            <p:commandButton  value="#{bibliotecaBean.boton}" action="#{bibliotecaBean.creaBiblioteca}" styleClass="Wid100Imp">
+            </p:commandButton>
+        </h:form>
+
+
+        <p:dialog closeOnEscape="true" modal="true" header="..:: MANTENIMIENTO INSTITUCIÓN ::.." resizable="false" showEffect="puff" widgetVar="dlgInstitucion" hideEffect="puff">
+            <h:form id="frmInstitAdd">    
+                <h:panelGrid columns="2" cellpadding="5">
+                    <p:outputLabel for="txtNombreInstitucion" value="NOMBRE DE LA INSTITUCIÓN: " />
+                    <p:inputText id="txtNombreInstitucion" value="#{institucionBean.institucion.NOMBRE_INSTITUCION}"></p:inputText>
+                    <p:outputLabel for="txtNombreRepresentante" value="NOMBRE DEL REPRESENTANTE: "/>
+                    <p:inputText id="txtNombreRepresentante" value="#{institucionBean.institucion.NOMBRE_REPRESENTANTE}"></p:inputText>
+                    <p:outputLabel for="txtTipoInstitucion" value="TIPO INSTITUCIÓN: " />
+                    <p:selectOneMenu id="txtTipoInstitucion" value="#{institucionBean.institucion.TIPO_INSTITUCION}" style="width:125px">
+                        <f:selectItems value="#{institucionBean.comboTipoInstitucion}"/>
+                    </p:selectOneMenu>
+                    <p:commandButton value="REGISTRAR INSTITUCIÓN" actionListener="#{institucionBean.creaInstitucion}"></p:commandButton>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog closeOnEscape="true" modal="true" header="..:: GEOLOCALIZACION ::.." resizable="false" 
+                  showEffect="puff" widgetVar="dlgGmap" hideEffect="puff" styleClass="Wid50Imp" style="height:1000px !important;">
+
+            <h:form prependId="false">
+
+                <h:panelGrid columns="3" styleClass="Wid100" columnClasses="Wid20,Wid60,Wid10" >
+                    <p:outputLabel for="localizar" value="Localizar:" />
+                    <p:inputText id="localizar" styleClass="Wid100" />
+                    <p:commandButton value="Buscar" icon="ui-icon-search" onclick="geocode()" type="button" />
+                </h:panelGrid>
+
+                <p:gmap id="map" center="#{bibliotecaBean.centerGeoMap}" zoom="#{bibliotecaBean.zoom}" type="ROADMAP"  style="width:100%;height:600px" model="#{bibliotecaBean.emptyModel}"
+                        onPointClick="handlePointClick(event);" widgetVar="map" >
+                    <p:ajax event="geocode" listener="#{bibliotecaBean.onGeocode}"/>
+                </p:gmap>
+
+            </h:form>
+            <p:dialog id="dlgCoordenadas" widgetVar="dlg" showEffect="fade" >
+                <h:form prependId="false">
+                    <h:panelGrid columns="2">
+                        <h:outputLabel for="title" value="Title:" />
+                        <p:inputText id="title" value="#{bibliotecaBean.title}" />
+
+                        <f:facet name="footer">
+                            <p:commandButton value="Add" actionListener="#{bibliotecaBean.addMarker}"  action="#{bibliotecaBean.pasar()}" onclick="PF('dlgMap').hide()"
+                                             oncomplete="markerAddComplete()"/>
+                            <p:commandButton value="Cancel" onclick="return cancel()" />
+                        </f:facet>
+                    </h:panelGrid>
+
+                    <h:inputHidden id="lat" value="#{bibliotecaBean.lat}" />
+                    <h:inputHidden id="lng" value="#{bibliotecaBean.lng}" />
+                </h:form>
+            </p:dialog>
+
+
+
+
+
+
+        </p:dialog>
+
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Autor" url="#" />
+            <p:menuitem value="Registrar" url="/Autor/Add" />
+        </p:breadCrumb>
+    </ui:define>
+    
+    <ui:define name="content">
+        <p:tabMenu activeIndex="1">
+            <p:menuitem value="Listado" outcome="autorList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Registrar" outcome="autorAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+        </p:tabMenu>
+        <p:separator />
+         <h:form id="frmAutorAdd">
+            <div class="ui-grid ui-grid-responsive">
+                <p:panel id="panel" header="..:: REGISTRO DE AUTORES ::..">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-10">                        
+                            <h:panelGrid id="grid" columns="2" cellspacing="5" styleClass="Wid100" columnClasses="Wid20,Wid80">
+                                <p:outputLabel for="nombre" value="NOMBRES : "/>
+                                <p:inputText id="nombre" value="#{autor.autAdd.NOMBRE}" required="false" styleClass="Wid100"/>
+                                <p:outputLabel for="paterno" value="AP. PATERNO : "/>
+                                <p:inputText id="paterno" value="#{autor.autAdd.APELLIDO_PATERNO}" required="true" styleClass="Wid100"/>
+                                <p:outputLabel for="materno" value="AP. MATERNO : "/>
+                                <p:inputText id="materno" value="#{autor.autAdd.APELLIDO_MATERNO}" required="false" styleClass="Wid100"/>  
+                                <p:outputLabel for="pais" value="NACIONALIDAD : "/>
+                                <p:selectOneMenu id="pais" filter="true" widgetVar="cboPais" value="#{autor.autAdd.ID_PAIS}" required="false" styleClass="Wid100Imp">
+                                    <f:selectItem itemLabel="Seleccione un país" itemValue="-1" noSelectionOption="true" />
+                                    <f:selectItems value="#{autor.cboPais}"/>
+                                </p:selectOneMenu>                       
+                                <p:spacer/>
+                                <p:commandButton value="REGISTRAR" update=":frmAutorAdd:grid" actionListener="#{autor.crearAutor()}"/>
+                            </h:panelGrid>                        
+                        </div>
+                        <div class="ui-grid-col-6">
+                            <p:messages id="messages" autoUpdate="true" closable="true" showDetail="true"/>
+                        </div>
+                    </div>
+                </p:panel>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

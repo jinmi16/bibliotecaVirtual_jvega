@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="micuenta" url="#" />
+            <p:menuitem value="actualizar" url="/cuenta/upd" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+
+        <p:separator />
+        <p:panel header="..:: DATOS DE CUENTA ::.." style="center">
+            <h:form id="frmPersonalAdd">
+              
+
+                <div class="ui-grid ui-grid-responsive">
+                    <div class="ui-grid-row">
+                        <div class="ui-grid-col-10">
+                            <h:panelGrid styleClass="Wid100" id="grid" columns="2" cellspacing="5" columnClasses="Wid20,Wid70">
+                                <p:outputLabel for="nombre" value="NOMBRES"/>
+                                <p:inputText id="nombre" value="#{micuenta.personal.NOMBRES}" styleClass="Wid100" required="true"/>
+                                <p:outputLabel for="paterno" value="PATERNO"/>
+                                <p:inputText id="paterno" value="#{micuenta.personal.PATERNO}" style="width:100% " required="true"/>
+                                <p:outputLabel for="materno" value="MATERNO"/>
+                                <p:inputText id="materno" value="#{micuenta.personal.MATERNO}" style="width:100% " required="true"/>
+                                <p:outputLabel for="dni" value="DNI" />
+                                <p:inputMask mask="99999999" id="dni" value="#{micuenta.personal.DNI}" style="width:100% " required="true"/>
+                                <p:outputLabel for="biblioteca" value="BIBLIOTECA"/>
+                                <p:inputText id="biblioteca" value="#{micuenta.personal.BIBLIOTECA_MEDIADOR}" style="width:100% " required="true" disabled="true"/> 
+
+                                <p:outputLabel for="correo" value="CORREO"/>
+                                <p:inputText id="correo" value="#{micuenta.personal.CORREO}" style="width:100% " required="true" validatorMessage="Formato de email invalido" requiredMessage="Please enter your email address.">
+                                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                </p:inputText> 
+                                <p:outputLabel for="usuario" value="USUARIO" />
+                                <p:inputText id="usuario" value="#{micuenta.personal.cuenta}" style="width:100% " required="true"/> 
+
+                                <p:outputLabel  value=""/>
+                                <p:commandButton value="REGISTRAR" action="#{micuenta.micuentaUpd}" style="width:100% " />
+
+                            </h:panelGrid>
+
+
+
+                        </div>
+                        <div class="ui-grid-col-6">
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </h:form>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

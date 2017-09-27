@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Reportes" url="#" />
+            <p:menuitem value="Diario" outcome="reporteDiario.xhtml"/>
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="0">
+            <p:menuitem value="Día" outcome="reporteDiario.xhtml" styleClass="icon-list"/>
+            <p:menuitem value="Rango" outcome="reporteRangoTrabajadores.xhtml" styleClass="icon-googleplus" rendered="#{usuarioBean.representante}"/>
+            <p:menuitem value="Anual" outcome="reporteAnualTrabajadores.xhtml" styleClass="icon-underline6" rendered="#{usuarioBean.representante}"/>
+        </p:tabMenu>
+
+        <p:separator/>
+
+        <h:form id="frmReporte">
+            <div class="Container50 TexAlLeft">
+                <p:outputLabel for="txtFecha" value="FECHA DE REPORTE: " style="margin-right: 20px;"/>
+                <p:calendar locale="es" id="txtFecha" pattern="dd-MM-yyyy" mask="true" value="#{reporteBean.fechaReporte}" disabledWeekends="true">
+                    <p:ajax event="dateSelect" listener="#{reporteBean.cambiaFecha}"/>
+                </p:calendar>
+                <div class="Card ShadowEffect">
+                    <p:chart id="reporteBar" type="bar" model="#{reporteBean.barModel}" style="height:300px"/>
+                </div>
+            </div>
+            <p:spacer styleClass="Container5"/>
+            <div class="Container40 MarTop50">
+                <p:dataTable id="tblUsuario" var="u" value="#{reporteBean.listRUDoc}">
+                    <p:column headerText="Usuario" styleClass="TexAlCenter fs20">
+                        <h:outputText value="#{u.USUARIO}"/>
+                    </p:column>
+                    <p:column headerText="Cantidad" styleClass="TexAlCenter fs20">
+                        <h:outputText value="#{u.CONTEO}"/>
+                    </p:column>
+                    <p:columnGroup type="footer">
+                        <p:row>
+                            <p:column style="text-align:right;font-weight:bold" footerText="TOTAL: "/>
+                            <p:column style="font-weight:bold" footerText="#{reporteBean.sumaDocumentales}"/>
+                        </p:row>
+                    </p:columnGroup>
+                </p:dataTable>
+            </div>
+        </h:form>
+        <style>
+            .ui-datatable table thead tr th, .ui-datatable table tfoot tr td, .ui-datatable table thead tr th{
+                color: #fff !important;
+                background-color: #6F6F6F !important;
+            }
+        </style>
+        <script>
+            function skinBar() {
+                this.cfg.shadow = false;
+                this.cfg.seriesColors = ['#65C267', '#FE6665', '#8566C3', '#FEC168', '#FFFF67', '#A366A2', '#6766FF', '#FFA366', '#A3E166', '#C267A4'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#F5F5F5',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#666F77'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    renderer: $.jqplot.BarRenderer,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>

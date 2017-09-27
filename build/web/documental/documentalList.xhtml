@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:metadata>
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{perfilDocumentalDetalleBean.perfil}" />
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{tipoBean.perfil}" />
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}" />
+        <f:viewParam name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+    </f:metadata>
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="#{documentalBean.perfil_documental}" url="#" />
+            <p:menuitem value="Listado" outcome="documentalList.xhtml">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{perfilDocumentalDetalleBean.perfil}" />
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="1">
+            <p:menuitem value="Listado General" outcome="documentalListGn.xhtml" styleClass="icon-menu">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}"/>
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+            <p:menuitem value="Listado" outcome="documentalList.xhtml" styleClass="icon-list">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}"/>
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+            <p:menuitem value="#{documentalBean.registrartModificar}" outcome="documentalUpd.xhtml" styleClass="icon-underline6">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}"/>
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+        </p:tabMenu>
+
+        <p:separator />
+
+
+        <h:form id="frmListDocumental">            
+            <p:dataTable var="documental" id="tblDocumental" 
+                         widgetVar="tblDocumental"
+                         value="#{documentalBean.lazymodel}" scrollable="true" 
+                         scrollWidth="100%" scrollHeight="600" frozenRows="0" 
+                         paginator="true" rows="100" rowsPerPageTemplate="80,100,150"
+                         paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                         lazy="true" emptyMessage="No se encontraron registros..." 
+                         filteredValue="#{documentalBean.filtroDocumental}">  
+                 
+                 <f:facet name="header">
+                    <p:outputPanel>
+                        <p:fragment autoUpdate="true">
+                            <h:outputText value="Buscar: "/>
+                            <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..." value="#{documentalBean.palabra}"/>
+                            <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" value="Filtrar" actionListener="#{documentalBean.accionFiltrar()}" />
+                        </p:fragment>
+                    </p:outputPanel>
+                </f:facet>
+
+                <p:column headerText="Eliminar" width="50" style="text-align: center;">
+                    <p:commandButton ajax="true" update=":frmListDocumental:tblDocumental :gMensaje" icon="fa fa-fw fa-trash-o" action="#{documentalBean.delDocumental(documental)}">
+                        <p:confirm header="Confirmar acción" message="¿Está seguro de eliminar este registro?" icon="fa fa-fw fa-trash-o" />
+                    </p:commandButton>
+                </p:column>
+                <p:column headerText="Editar" width="50" style="text-align: center;">
+                    <p:commandButton  actionListener="#{documentalBean.redireccionar(documentalBean.perfil,documentalBean.perfil_documental,documental.ID_DOCUMENTAL)}" icon="fa fa-fw fa-edit" />
+                </p:column>
+                <p:column  headerText="ID" width="90">
+                    <h:outputText value="#{documental.ID_DOCUMENTAL}" />
+                </p:column>
+                <p:column headerText="CÓDIGO" width="100">
+                    <h:outputText value="#{documental.OTRO}" />
+                </p:column>
+                <p:column headerText="TÍTULO" width="200">
+                    <h:outputText value="#{documental.TITULO}" />
+                </p:column>
+                <p:column headerText="TÍTULO ALTERNATIVO" style="display: none;">
+                    <h:outputText value="#{documental.TITULO_ALTERNATIVO}" />
+                </p:column>
+                <p:column headerText="DESCRIPCION" width="200">
+                    <h:outputText value="#{documental.DESCRIPCION}" />
+                </p:column>
+                <p:column headerText="RESUMEN" style="display: none;">
+                    <h:outputText value="#{documental.RESUMEN}" />
+                </p:column>
+                <p:column headerText="TIPO" style="display:none;">
+                    <h:outputText value="#{documental.ID_TIPO}" />
+                </p:column>
+                <p:column headerText="TIPO" width="80">
+                    <h:outputText value="#{documental.TIPO}" />
+                </p:column>
+                <p:column headerText="FUENTE" style="display:none;">
+                    <h:outputText value="#{documental.ID_BIBLIOTECA_FUENTE}" />
+                </p:column>
+                <p:column headerText="FUENTE" width="170" >
+                    <h:outputText value="#{documental.BIBLIOTECA_FUENTE}" />
+                </p:column>
+                <p:column headerText="TIENE COMO VERSION" style="display:none;" >
+                    <h:outputText value="#{documental.TIENE_COMO_VERSION}" />
+                </p:column>
+                <p:column headerText="ES PARTE DE" width="150">
+                    <h:outputText value="#{documental.ES_PARTE_DE}" />
+                </p:column>
+                <p:column headerText="TIENE PARTE DE" style="display:none;">
+                    <h:outputText value="#{documental.TIENE_PARTE_DE}" />
+                </p:column>
+                <p:column headerText="COBERTURA ESPACIAL" style="display:none;">
+                    <h:outputText value="#{documental.ID_COBERTURA_ESPACIAL}" />
+                </p:column>
+                <p:column headerText="COBERTURA ESPACIAL" width="200" >
+                    <h:outputText value="#{documental.COBERTURA_ESPACIAL}" />
+                </p:column>
+                <p:column headerText="COBERTURA TEMPORAL" style="display:none;">
+                    <h:outputText value="#{documental.ID_COBERTURA_TEMPORAL}" />
+                </p:column>
+                <p:column headerText="COBERTURA TEMPORAL" width="150">
+                    <h:outputText value="#{documental.COBERTURA_TEMPORAL}" />
+                </p:column>
+                <p:column headerText=" FECHA DISPONIBLE" width="180">
+                    <h:outputText value="#{documental.FECHA_DISPONIBLE}" />
+                </p:column>
+                <p:column headerText="FECHA PUBLICACION" width="150">
+                    <h:outputText value="#{documental.FECHA_PUBLICACION}" />
+                </p:column>
+                <p:column headerText="FECHA ACEPTACION" style="display:none;">
+                    <h:outputText value="#{documental.FECHA_ACEPTACION}" />
+                </p:column>
+                <p:column headerText="FECHA COPYRIGHT" style="display:none;">
+                    <h:outputText value="#{documental.FECHA_COPYRIGHT}" />
+                </p:column>
+                <p:column headerText="FORMATO" width="90">
+                    <h:outputText value="#{documental.ID_FORMATO}" />
+                </p:column>
+                <p:column headerText="PESO" width="90" >
+                    <h:outputText value="#{documental.FORMATO_EXTENSION}" />
+                </p:column>
+                <p:column headerText="FORMATO MEDIO" style="display: none" >
+                    <h:outputText value="#{documental.FORMATO_MEDIO_DESCRIPCION}" />
+                </p:column>
+                <p:column headerText="EDITORIAL" style="display: none;">
+                    <h:outputText value="#{documental.ID_EDITORIAL}" />
+                </p:column>
+                <p:column headerText="EDITORIAL" style="display: none;">
+                    <h:outputText value="#{documental.EDITORIAL}" />
+                </p:column>
+                <p:column headerText="DERECHOS" width="200">
+                    <h:outputText value="#{documental.DERECHO}" />
+                </p:column>
+                <p:column headerText="DERECHOS DE ACCESO" style="display:none;" >
+                    <h:outputText value="#{documental.DERECHO_ACCESO}" />
+                </p:column>
+                <p:column headerText="AUDIENCIA" style="display:none;">
+                    <h:outputText value="#{documental.ID_AUDIENCIA}" />
+                </p:column>
+                <p:column headerText="AUDIENCIA" width="150">
+                    <h:outputText value="#{documental.AUDIENCIA}" />
+                </p:column>
+                <p:column headerText="URL" style="display:none;" >
+                    <h:outputText value="#{documental.URL}" />
+                </p:column>
+                <p:column headerText="ISBN" style="display:none;">
+                    <h:outputText value="#{documental.ISBN}" />
+                </p:column>
+                <p:column headerText="NÚMERO DE IMAGENES" width="150" >
+                    <h:outputText value="#{documental.NUMERO_PAGINAS}" />
+                </p:column>                 
+                <f:facet name="footer"> 
+                    <h:outputText value="#{documentalBean.numeroRegistros} REGISTROS" />                        
+                </f:facet>                 
+            </p:dataTable>
+            
+            <p:confirmDialog global="true" showEffect="puff" hideEffect="puff">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>  
+    </ui:define>
+</ui:composition>

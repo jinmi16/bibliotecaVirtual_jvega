@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Documental Publicado" url="#" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <script>
+            function pasarPagina(url) {
+                window.open(url, '', 'width=auto,height=auto');
+            }
+        </script>
+        <h:form id="frmPub">
+            <p:panelGrid columns="4" styleClass="Wid100"  columnClasses="Wid10,Wid40,Wid10,Wid40">
+                <p:column>
+                    <p:outputLabel value="Perfil"/>
+                </p:column>
+                <p:column>
+                    <p:selectOneMenu id="perfilControl"
+                                     filter="true" 
+                                     widgetVar="perfilControl" 
+                                     value="#{publicacionBean.perfilControl}" styleClass="Wid100Imp">
+                        <p:ajax listener="#{publicacionBean.listarDocumentalPublicado()}"/>
+                        <f:selectItem itemLabel="Seleccione perfil documental" itemValue="-1" noSelectionOption="true"/>
+                        <f:selectItems value="#{publicacionBean.cboPerfiles}"/>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column>
+                    <p:outputLabel value="Estado Publicacion"/>
+                </p:column>
+                <p:column>
+
+                    <p:selectOneMenu id="visibilidad"
+                                     filter="true" 
+                                     widgetVar="visibilidad" 
+                                     value="#{publicacionBean.visibilidad}" styleClass="Wid100Imp">
+                        <p:ajax listener="#{publicacionBean.listarDocumentalPublicado()}"/>
+                        <f:selectItem itemLabel="Todos" itemValue="-1" noSelectionOption="true"/>
+                        <f:selectItems value="#{publicacionBean.cboVisibilidad}"/>
+                    </p:selectOneMenu>
+                </p:column>
+                <p:column rendered="#{documentalBean.ocultarBiblioteca}">
+                    <p:outputLabel for="biblioteca" value="BIBLIOTECA"/>
+                </p:column>
+                <p:column rendered="#{documentalBean.ocultarBiblioteca}">
+                    <p:selectOneMenu id="biblioteca" 
+                                     filter="true" 
+                                     widgetVar="cboBiblioteca" 
+                                     value="#{publicacionBean.idBibliotecaSelect}" required="true" styleClass="Wid100Imp">
+                         <p:ajax listener="#{publicacionBean.listarDocumentalPublicado()}"/>
+                        <f:selectItems value="#{personalB.cboBiblioteca}"/>
+                    </p:selectOneMenu>
+                </p:column>
+            </p:panelGrid>
+            <p:dataTable  var="pub" id="tblPub"
+                          widgetVar="tblPub"
+                          value="#{publicacionBean.lazymodel}" scrollable="true" 
+                          scrollWidth="100%" scrollHeight="600" frozenRows="0" 
+                          paginator="true" rows="100" rowsPerPageTemplate="20,80,100,150"
+                          paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+                          lazy="true" emptyMessage="No se encontraron registros."
+                          filteredValue="#{publicacionBean.filtroTabla}">
+
+                >
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <p:fragment autoUpdate="true">
+                            <h:outputText value="Buscar: "/>
+                            <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..." value="#{publicacionBean.query}"/>
+                            <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" value="Filtrar" actionListener="#{publicacionBean.accionFiltrar()}" />
+                        </p:fragment>
+                    </p:outputPanel>
+                </f:facet>
+                <p:column filterStyle="display:none" filterBy="#{pub.ID_DOCUMENTAL}" filterMatchMode="contains" headerText="Editar" width="5%" style="text-align: center;">
+                    <p:commandButton  actionListener="#{perfilDocumentalDetalleBean.redireccionar(pub.ID_DOCUMENTAL)}" icon="fa fa-fw fa-edit" >
+                    </p:commandButton>
+
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{pub.ID_DOCUMENTAL}" filterMatchMode="contains" headerText="Detalle" width="6%" style="text-align: center;">
+                    <p:commandButton actionListener="#{documentalBean.cargaDataControl(pub.ID_DOCUMENTAL)}" icon="fa fa-search">
+                    </p:commandButton>
+                </p:column>
+                <p:column filterStyle="display:none" filterBy="#{pub.ID_DOCUMENTAL}" filterMatchMode="contains" headerText="Publicado" width="8%" style="text-align: center;">
+                    <p:commandButton styleClass="#{pub.CLASS_VISIBLE}" icon="#{pub.ICONO_VISIBLE}" actionListener="#{publicacionBean.cambiaVisiblidad(pub)}">
+                        <p:confirm header="CONFIRMAR ACCION" message="¿El recurso se mostrara/ocultara en el catalogo virtual ?"  icon="ui-icon-info" />
+
+                    </p:commandButton>
+                </p:column>
+
+                <p:column style="display:none;" headerText="ID_DOCUMENTAL" filterStyle="display:none" filterBy="#{pub.ID_DOCUMENTAL}" filterMatchMode="contains">
+                    <p:outputLabel value="#{pub.ID_DOCUMENTAL}"/>
+                </p:column>
+                <p:column style="display:none;" headerText="VISIBLE" filterStyle="display:none" filterBy="#{pub.VISIBLE}" filterMatchMode="contains">
+                    <p:outputLabel value="#{pub.VISIBLE}"/>
+                </p:column>
+                <p:column headerText="Cod. Barras" filterStyle="display:none" filterBy="#{pub.OTRO}" filterMatchMode="contains" width="10%" >
+                    <p:outputLabel value="#{pub.OTRO}"/>
+                </p:column>
+                <p:column headerText="Titulo" filterStyle="display:none" filterBy="#{pub.TITULO}" filterMatchMode="contains" width="25%"  >
+                    <p:outputLabel value="#{pub.TITULO}" />
+                </p:column>
+                <p:column headerText="Url" filterStyle="display:none" filterBy="#{pub.URL}" filterMatchMode="contains" width="30%" >
+
+                    <a onclick="pasarPagina('#{pub.URL}')">
+                        <p:outputLabel value="#{pub.URL}" style="cursor: pointer"/>
+                    </a>  
+                </p:column>
+                <p:column headerText="# Visitas" filterStyle="display:none" filterBy="#{pub.NRO_VISITAS}" filterMatchMode="contains" width="8%" >
+                    <p:outputLabel value="#{pub.NRO_VISITAS}"/>
+                </p:column>
+
+                <p:column headerText="Responsable" filterStyle="display:none" filterBy="#{pub.responsable}" filterMatchMode="contains" width="12%" >
+                    <p:outputLabel value="#{pub.responsable}"/>
+                </p:column>
+
+                <p:column headerText="F. Publicacion" filterStyle="display:none" filterBy="#{pub.FECHA_PUBLICACION}" filterMatchMode="contains" width="15%" >
+                    <p:outputLabel value="#{pub.FECHA_PUBLICACION}"/>
+                </p:column>
+            </p:dataTable>
+
+
+            <p:confirmDialog global="true" showEffect="puff" hideEffect="puff">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+        <p:dialog styleClass="Wid60Imp" header="Documental Seleccionado" id="dlgDocumental" widgetVar="dlgDocumental"  modal="true" showEffect="fade" hideEffect="fade">
+            <h:form>
+                <p:scrollPanel mode="native" style="height:500px">
+                    <p:panelGrid style="text-align:left;margin:0 auto;" columns="2">
+                        <h:outputText value="ID DOCUMENTAL: " />
+                        <h:outputText value="#{documentalBean.dgn.ID_DOCUMENTAL}" />
+                        <h:outputText value="TIPO CÓDIGO: " />
+                        <h:outputText value="#{documentalBean.dgn.TIPO_OTRO}" />
+                        <h:outputText value="CÓDIGO: " />
+                        <h:outputText value="#{documentalBean.dgn.OTRO}" />
+                        <h:outputText value="TITULO:" />
+                        <h:outputText value="#{documentalBean.dgn.TITULO}" />
+                        <h:outputText value="AUTORES: "/>
+                        <p:dataList value="#{documentalBean.listdetautores}"  var="a" emptyMessage="No hay autores asignadas." itemType="circle">
+                            #{a.APELLIDO_PATERNO} #{a.APELLIDO_MATERNO}, #{a.NOMBRE}
+                        </p:dataList>
+                        <h:outputText value="EDITORIAL: " />
+                        <h:outputText value="#{documentalBean.dgn.EDITORIAL}" />
+                        <h:outputText value="FECHA PUBLICACIÓN: " />
+                        <h:outputText value="#{documentalBean.dgn.FECHA_PUBLICACION}" />
+                        <h:outputText value="COLECCIÓN: "/>
+                        <p:dataList value="#{documentalBean.listdetcoleccion}"  var="c" emptyMessage="No hay colecciones asignadas." itemType="circle">
+                            #{c.DESCRIPCION}
+                        </p:dataList>
+                        <h:outputText value="SERIE: "/>
+                        <p:dataList value="#{documentalBean.listdetserie}"  var="s" emptyMessage="No hay series asignadas." itemType="circle">
+                            #{s.SERIE}
+                        </p:dataList>
+                        <h:outputText value="LENGUAJE: "/>
+                        <p:dataList value="#{documentalBean.listdetlenguaje}"  var="l" emptyMessage="No hay lenguajes asignadas." itemType="circle">
+                            #{l.LENGUAJE}
+                        </p:dataList>
+                        <h:outputText value="TEMAS: "/>
+                        <p:dataList value="#{documentalBean.listdettema}"  var="t" emptyMessage="No hay temas asignadas." itemType="circle">
+                            #{t.TEMA}
+                        </p:dataList>
+                        <h:outputText value="TIPO: " />
+                        <h:outputText value="#{documentalBean.dgn.TIPO}" />
+                        <h:outputText value="VERSIÓN:  " />
+                        <h:outputText value="#{documentalBean.dgn.TIENE_COMO_VERSION}" />
+                        <h:outputText value="COBERTURA ESPACIAL: " />
+                        <h:outputText value="#{documentalBean.dgn.COBERTURA_ESPACIAL}" />
+                        <h:outputText value="COBERTURA TEMPORAL: " />
+                        <h:outputText value="#{documentalBean.dgn.COBERTURA_TEMPORAL}" />
+                        <h:outputText value="CONTRIBUIDORES: "/>
+                        <p:dataList value="#{documentalBean.listdetcontribuidor}"  var="cn" emptyMessage="No hay contribuidores registrados." itemType="circle">
+                            #{cn.CONTRIBUIDOR}
+                        </p:dataList>
+                        <h:outputText value="DERECHOS: " />
+                        <h:outputText value="#{documentalBean.dgn.DERECHO}" />
+                        <h:outputText value="AUDIENCIA: " />
+                        <h:outputText value="#{documentalBean.dgn.AUDIENCIA}" />
+                        <h:outputText value="FORMATO: " />
+                        <h:outputText value="#{documentalBean.dgn.FORMATO}" />
+                        <h:outputText value="FORMATO EXTENSIÓN: " />
+                        <h:outputText value="#{documentalBean.dgn.FORMATO_EXTENSION}" />
+                        <h:outputText value="FORMATO MEDIO: " />
+                        <h:outputText value="#{documentalBean.dgn.FORMATO_MEDIO_DESCRIPCION}" />
+                        <h:outputText value="NÚMERO IMAGENES: " />
+                        <h:outputText value="#{documentalBean.dgn.NUMERO_PAGINAS}" />
+                    </p:panelGrid>
+                </p:scrollPanel>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

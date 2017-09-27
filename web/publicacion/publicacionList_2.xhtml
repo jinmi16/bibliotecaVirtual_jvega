@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Control Documental" url="#" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="frmPublicacion">
+
+            <p:panelGrid styleClass="Wid50"  columnClasses="Wid10,Wid50">
+                <p:column>
+                    <p:outputLabel value="Perfil"/>
+                </p:column>
+                <p:column>
+                    <p:selectOneMenu id="perfilControl"
+                                     filter="true" 
+                                     widgetVar="perfilControl" 
+                                     value="#{perfilDocumentalDetalleBean.perfilControl}" required="true" styleClass="Wid100Imp">
+                        <p:ajax listener="#{perfilDocumentalDetalleBean.listarDocumentalPublicado()}" update="frmPublicacion"/>
+                        <f:selectItem itemLabel="Seleccione un Perfil" itemValue="-1" noSelectionOption="true"/>
+                        <f:selectItems value="#{perfilDocumentalDetalleBean.cboPerfiles}"/>
+                    </p:selectOneMenu>
+                </p:column>
+            </p:panelGrid>
+
+            <p:dataTable lazy="false" id="tblPublicacion" 
+                         var="cd" value="#{perfilDocumentalDetalleBean.ldocumentalpublicado}" 
+                         paginator="true" rows="15" 
+                         widgetVar="tblPublicacion"
+                         filteredValue="#{perfilDocumentalDetalleBean.ldocumentalpublicadofiltrado}" 
+                         paginatorPosition="top" emptyMessage="No se encontraron registros.">
+
+                <f:facet name="header">
+                    <p:outputPanel>
+                        <h:outputText value="Busque documental :" />
+                        <p:inputText id="globalFilter" style="width:200px;margin-left:30px;border-radius:18px;" placeholder="Ingrese su búsqueda..."/>
+                        <p:commandButton style="margin-left:30px;border-radius: 18px;border:0px;" onclick="PF('tblPublicacion').filter()" value="Filtrar"></p:commandButton>
+                    </p:outputPanel>
+                </f:facet>
+
+                
+                <p:column headerText="ID" width="60" style="text-align: center" filterStyle="display:none" filterBy="#{cd.ID_DOCUMENTAL}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.ID_DOCUMENTAL}"/>
+                </p:column>
+                <p:column headerText="COD. BARRAS"  style="text-align: center" filterStyle="display:none" filterBy="#{cd.OTRO}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.OTRO}"/>
+                </p:column>
+                <p:column headerText="TITULO" filterStyle="display:none" filterBy="#{cd.TITULO}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.TITULO}"/>
+                </p:column>
+                <p:column headerText="URL" filterStyle="display:none" filterBy="#{cd.URL}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.URL}"/>
+                </p:column>
+                <p:column headerText="NRO_VISITAS" filterStyle="display:none" filterBy="#{cd.NRO_VISITAS}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.NRO_VISITAS}"/>
+                </p:column>
+                <p:column headerText="NOMBRE" filterStyle="display:none" filterBy="#{cd.NOMBRE}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.NOMBRE}"/>
+                </p:column>
+                <p:column headerText="APELLIDO PATERNO" filterStyle="display:none" filterBy="#{cd.APELLIDO_PATERNO}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.APELLIDO_PATERNO}"/>
+                </p:column>
+                <p:column headerText="APELLIDO MATERNO" filterStyle="display:none" filterBy="#{cd.APELLIDO_MATERNO}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.APELLIDO_MATERNO}"/>
+                </p:column>
+                <p:column headerText="FECHA PUBLICACION" filterStyle="display:none" filterBy="#{cd.FECHA_PUBLICACION}" filterMatchMode="contains">
+                    <p:outputLabel value="#{cd.FECHA_PUBLICACION}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </ui:define>
+</ui:composition>

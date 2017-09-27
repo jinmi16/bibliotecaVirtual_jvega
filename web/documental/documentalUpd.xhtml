@@ -1,0 +1,1286 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:metadata>
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{perfilDocumentalDetalleBean.perfil}" />
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{tipoBean.perfil}" />
+        <f:viewParam name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}" />
+        <f:viewParam name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+        <f:viewParam name="ID_DOCUMENTAL" value="#{documentalBean.ID_DOCUMENTAL}" />
+    </f:metadata>
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="#{documentalBean.perfil_documental}" url="#" />
+            <p:menuitem value="#{documentalBean.registrartModificar}" outcome="documentalUpd.xhtml">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{perfilDocumentalDetalleBean.perfil}" />
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+        </p:breadCrumb>
+    </ui:define>
+    <ui:define name="content">
+        <p:tabMenu activeIndex="2">
+            <p:menuitem value="Listado General" outcome="documentalListGn.xhtml" styleClass="icon-menu">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}"/>
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+            <p:menuitem value="Listado" outcome="documentalList.xhtml" styleClass="icon-list">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}"/>
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+            <p:menuitem value="#{documentalBean.registrartModificar}" outcome="documentalUpd.xhtml" styleClass="icon-underline6">
+                <f:param name="ID_PERFIL_DOCUMENTAL" value="#{documentalBean.perfil}"/>
+                <f:param name="PERFIL_DOCUMENTAL" value="#{documentalBean.perfil_documental}" />
+            </p:menuitem>
+        </p:tabMenu>
+        <p:separator />
+        <f:event listener="#{documentalBean.listarDetallePerdil()}" type="preRenderView"/>
+        <f:event listener="#{perfilDocumentalDetalleBean.listarDetallePerdil()}" type="preRenderView"/>
+        <f:event listener="#{documentalBean.cargarObjetosForUpdate()}" type="preRenderView"/>
+
+        <h:form id="frmAddDocumental">
+            
+            <p:panel id="contenido" header="CONTENIDO">
+                <p:focus context="contenido"/>
+                <p:panelGrid styleClass="Wid100">
+                    <p:row styleClass="Wid100" >
+                        <p:column styleClass="Wid15" rendered="#{documentalBean.ocultarBiblioteca}">
+                            <p:outputLabel for="biblioteca" value="BIBLIOTECA"/>
+                        </p:column>
+                        <p:column styleClass="Wid70" rendered="#{documentalBean.ocultarBiblioteca}">
+                            <p:selectOneMenu id="biblioteca" 
+                                             filter="true" 
+                                             widgetVar="cboBiblioteca" 
+                                             value="#{documentalBean.documental.ID_BIBLIOTECA_DOCUMENTAL}" required="true" styleClass="Wid100Imp">
+                                <f:selectItems value="#{personalB.cboBiblioteca}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:commandButton id="btnAyuda" 
+                                             widgetVar="btnAyuda" 
+                                             icon="fa fa-question" 
+                                             title="Activar/Desactivar Ayuda"
+                                             styleClass="#{metadataTablaBean.classActivarAyuda}"
+                                             update="frmAddDocumental"
+                                             style="float:right"
+                                             actionListener="#{metadataTablaBean.cambiarEstadoActivar}">
+                            </p:commandButton>
+                        </p:column>
+                    </p:row> 
+
+                    <p:row styleClass="Wid100" rendered="#{documentalBean.isVisible('OTRO')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="txtOtro" value="CÓDIGO: "/>
+                        </p:column>
+                        <p:column  styleClass="Wid50">
+                            <p:selectOneMenu id="cboTipoOtro" 
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboTipoOtro"
+                                             value="#{documentalBean.documental.ID_TIPO_OTRO}"
+                                             styleClass="Wid50Imp cboTipoOtro"
+                                             style="float:left;margin-right:15px;">
+                                <f:selectItem itemLabel="Seleccione un tipo" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{tipoOtroBean.cboTipoOtro}"/>
+                            </p:selectOneMenu>
+                            <p:inputText id="txtOtro" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.OTRO}"
+                                         styleClass="Wid40 txtOtro">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                            <p:tooltip  for="txtOtro" value="#{metadataTablaBean.obtenerAyuda('OTRO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+
+                    <p:row rendered="#{documentalBean.isVisible('TITULO')}">
+
+                        <p:column styleClass="Wid15" rendered="true">
+                            <p:outputLabel for="txtTitulo" value="TÍTULO: "/>
+                        </p:column>
+                        <p:column styleClass="Wid50" rendered="true">
+
+                            <p:inputText id="txtTitulo" required="false" value="#{documentalBean.documental.TITULO}" styleClass="Wid100 txtTitulo">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+
+                            <p:tooltip id="ttpTitulo" for="txtTitulo" value="#{metadataTablaBean.obtenerAyuda('TITULO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+
+                        <p:column styleClass="Wid15">
+                            <p:commandButton id="btnValidar" rendered="true"
+                                             widgetVar="btnValidar" 
+                                             icon="fa fa-check" 
+                                             title="Validar Documental"
+                                             styleClass="#{documentalBean.classValidacion} btnValidarTitulo"
+                                             update=":frmAddDocumental:btnValidar :gMensaje"
+                                             actionListener="#{documentalBean.validaTitulo()}">
+                            </p:commandButton>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('TITULO_ALTERNATIVO')}">
+                        <p:column>
+                            <p:outputLabel for="txtTituloAlternativo" value="TÍTULO ALTERNATIVO: "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtTituloAlternativo" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.TITULO_ALTERNATIVO}"
+                                         styleClass="Wid100 txtTituloAlternativo">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                            <p:tooltip  for="txtTituloAlternativo" value="#{metadataTablaBean.obtenerAyuda('TITULO_ALTERNATIVO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('TEMA')}">
+                        <p:column>
+                            <p:outputLabel for="cboTema" value="TEMAS: "/>
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu
+                                label="" updateLabel="true"
+                                id="cboTema" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboTema"
+                                value="#{documentalBean.selectedTema}"  styleClass="Wid100Imp cboTema">
+                                <f:selectItems value="#{temaBean.cboTema}" var="tema"  itemLabel="#{tema.TEMA}" itemValue="#{tema.ID_TEMA}"/>
+                            </p:selectCheckboxMenu>
+                            <p:tooltip  for="cboTema" value="#{metadataTablaBean.obtenerAyuda('TEMA')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton id="btnRefresh1" widgetVar="btnRefresh1" icon="fa fa-refresh" actionListener="#{temaBean.rfrhCboEditorial()}"/>
+                            <p:commandButton icon="fa fa-plus" title="Crear Tema" onclick="PF('dlgTema').show()"></p:commandButton>
+                            <p:commandButton id="btnEditarTema" icon="fa fa-pencil" title="Editar Temas" actionListener="#{documentalBean.editarTemas()}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('DESCRIPCION')}">
+                        <p:column>
+                            <p:outputLabel for="txtDescripcion" value="DESCRIPCIÓN: "/>
+                        </p:column>
+                        <p:column>
+
+                            <p:inputTextarea id="txtDescripcion" 
+                                             required="false" 
+                                             value="#{documentalBean.documental.DESCRIPCION}"  
+                                             styleClass="Wid100 txtDescripcion"
+                                             counter="countDescripcion"
+                                             maxlength="#{metadataTablaBean.obtenerLongitud('DESCRIPCION')}"
+                                             counterTemplate="{0} caracteres.">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputTextarea>
+                            <p:tooltip  for="txtDescripcion" value="#{metadataTablaBean.obtenerAyuda('DESCRIPCION')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                            <p:outputLabel id="countDescripcion" style="float: right" />
+                        </p:column>
+                        <p:column>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('RESUMEN')}">
+                        <p:column>
+                            <p:outputLabel for="txtResumen" value="RESUMEN: "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="txtResumen" 
+                                             required="false" 
+                                             value="#{documentalBean.documental.RESUMEN}" 
+                                             maxlength="#{metadataTablaBean.obtenerLongitud('RESUMEN')}"
+                                             counter="countResumen" 
+                                             counterTemplate="{0} caracteres."
+                                             styleClass="Wid100 txtResumen">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputTextarea>
+                            <p:tooltip  for="txtResumen" value="#{metadataTablaBean.obtenerAyuda('RESUMEN')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                            <p:outputLabel id="countResumen" style="float: right" />
+                        </p:column>
+                        <p:column>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('TABLA_CONTENIDO')}">
+                        <p:column>
+                            <p:outputLabel for="listContenidos" value="TABLA DE CONTENIDOS: "/>
+                        </p:column>
+                        <p:column>
+                            <p:dataList id="listContenidos" widgetVar="listContenidos"  value="#{documentalBean.selectedContenidos}"  var="u" emptyMessage="No se ha agregado aún." itemType="circle">
+                                #{u.indice} - #{u.tema}
+                            </p:dataList>
+                            <p:tooltip  for="listContenidos" value="#{metadataTablaBean.obtenerAyuda('TABLA_CONTENIDO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-plus" title="Agregar indice" onclick="PF('dlgIndice').show()"/>
+
+                            <p:commandButton id="rootbtn" icon="fa fa-file-excel-o" actionListener="#{documentalBean.opentablaContenidoExcel}" title="Importar desde excel">
+                                <p:ajax event="dialogReturn" listener="#{documentalBean.onReturnFromdocumentalUpd}" />
+                            </p:commandButton>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('NOTA')}">
+                        <p:column>
+                            <p:outputLabel for="txtNota" value="NOTA: "  />
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="txtNota" value="#{documentalBean.documental.NOTA}" styleClass="Wid100Imp">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputTextarea>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ID_TIPO')}">
+                        <p:column>
+                            <p:outputLabel for="cboTipo" value="TIPOS: "  />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cboTipo" 
+                                             filter="true" filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboTipo"
+                                             value="#{documentalBean.documental.ID_TIPO}"
+                                             styleClass="Wid100Imp cboTipo"
+                                             disabled="#{documentalBean.boolTipo}">
+                                <p:ajax listener="#{documentalBean.changeCboTipo()}"/>
+                                <f:selectItem itemLabel="Seleccione un tipo" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{tipoBean.cboTipo}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <p:tooltip  for="cboTipo" value="#{metadataTablaBean.obtenerAyuda('ID_TIPO')}" trackMouse="false" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row styleClass="rowPaginaInicio" style="display:none;">
+                        <p:column>
+                            <p:outputLabel for="txtPaginaInicio" value="PÁGINA INICIO " />
+                        </p:column>
+                        <p:column>
+                            <p:spinner min="0" id="txtPaginaInicio" value="#{documentalBean.documental.PAGINA_INICIO}" styleClass="Wid100Imp txtPaginaInicio"/>
+                        </p:column>
+                    </p:row>
+                    <p:row styleClass="rowPaginaFin" style="display:none">
+                        <p:column>
+                            <p:outputLabel for="txtPaginaFin" value="PÁGINA FIN "/>
+                        </p:column>
+                        <p:column>
+                            <p:spinner min="0" id="txtPaginaFin" value="#{documentalBean.documental.PAGINA_FIN}" styleClass="Wid100Imp txtPaginaFin"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ID_DOCUMENTAL_RELACION')}">
+                        <p:column>
+                            <p:outputLabel for="cboRelacionDocumental" value="RELACION:  "/>
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu 
+                                updateLabel="true"
+                                label=""
+                                id="cboRelacionDocumental" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboRelacionDocumental"
+                                value="#{documentalBean.selectedRelacionDocumental}"  styleClass="Wid100Imp cboTema">
+                                <f:selectItems value="#{documentalBean.cboDocumentalRelacion}"/>
+                            </p:selectCheckboxMenu>
+
+
+
+                        </p:column>
+                        <p:column>
+                            <p:tooltip  for="cboRelacionDocumental" value="#{metadataTablaBean.obtenerAyuda('ID_DOCUMENTAL_RELACION')}" trackMouse="false" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('TIENE_COMO_VERSION')}">
+                        <p:column>
+                            <p:outputLabel for="txtVersion" value="VERSIÓN: "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtVersion" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.TIENE_COMO_VERSION}"
+                                         styleClass="Wid100 txtVersion">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                        </p:column>
+                        <p:column>
+                            <p:tooltip  for="txtVersion" value="#{metadataTablaBean.obtenerAyuda('TIENE_COMO_VERSION')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ES_PARTE_DE')}">
+                        <p:column>
+                            <p:outputLabel for="txtEsParte" value="ES PARTE DE: "/>
+                        </p:column>
+                        <p:column style="padding-left:0px;">
+                            <p:inplace styleClass="claseInplace txtEsParte" id="txtEsParte" label="#{documentalBean.documental.ES_PARTE_DE}"  effectSpeed="fast" editor="true">
+                                <p:ajax event="save" listener="#{documentalBean.procesarTieneParte()}" update="txtEsParte"/>
+                                <p:panelGrid id="gridEsParte" columns="4" styleClass="Wid80">
+                                    <p:selectOneMenu id="cboIndicador1"
+                                                     required="false"
+                                                     widgetVar="cboIndicador1"
+                                                     value="#{documentalBean.indicador1}"
+                                                     style="width:190px">
+                                        <p:ajax listener="#{documentalBean.changeCboIndicador()}" update="gridEsParte"/>
+                                        <f:selectItem itemLabel="Selecione el indicador" itemValue="-1" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="TOMO" itemValue="TOMO" />
+                                        <f:selectItem itemLabel="VOLUMEN" itemValue="VOLUMEN" />
+                                        <f:selectItem itemLabel="FASCICULO" itemValue="FASCICULO" />
+                                        <f:selectItem itemLabel="PARTE" itemValue="PARTE" />  
+                                        <f:selectItem itemLabel="NUMERO" itemValue="NUMERO" />  
+                                    </p:selectOneMenu>
+                                    <p:inputText id="nindicador1" value="#{documentalBean.nindicador1}" styleClass="Wid100Imp" />
+                                    
+                                    <p:inputText id="indicador2" value="#{documentalBean.indicador2}" disabled="true" rendered="#{documentalBean.rindicador2}" style="width:100px;font-weight: bold;"/>
+                                    <p:inputText id="nindicador2" value="#{documentalBean.nindicador2}" rendered="#{documentalBean.rnindicador2}" styleClass="Wid100Imp" />
+                                </p:panelGrid>
+                            </p:inplace> 
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('TIENE_PARTE_DE')}">
+                        <p:column>
+                            <p:outputLabel for="txtTieneParte" value="TIENE PARTE DE: "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtTieneParte" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.TIENE_PARTE_DE}"
+                                         styleClass="Wid100 txtTieneParte">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+
+                        </p:column>
+                        <p:column>
+                            <p:tooltip  for="txtTieneParte" value="#{metadataTablaBean.obtenerAyuda('TIENE_PARTE_DE')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ID_COBERTURA_ESPACIAL')}" >
+                        <p:column>
+                            <p:outputLabel for="cboCobertura" value="COBERTURA ESPACIAL "/>
+                        </p:column>
+                        <p:column>
+
+                            <p:selectOneMenu id="cboCobertura" 
+                                             filter="true" filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboCobertura"
+                                             value="#{documentalBean.documental.ID_COBERTURA_ESPACIAL}"
+                                             styleClass="Wid100Imp cboCobertura">
+
+                                <p:ajax listener="#{coberturaBean.cboEditarCoberturaChage(documentalBean.documental.ID_COBERTURA_ESPACIAL)}" />
+                                <f:selectItem itemLabel="Seleccione cobertura" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{coberturaBean.cboCobertura}"/>
+                            </p:selectOneMenu>
+                            <p:tooltip  for="cboCobertura" value="#{metadataTablaBean.obtenerAyuda('ID_COBERTURA_ESPACIAL')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton icon="fa fa-plus" title="Crear cobertura" onclick="PF('dlgCoberturaEscpacial').show()"></p:commandButton>
+                            <p:commandButton id="btnEditCoberturaespacial"  icon="fa fa-edit" title="Editar Cobertura Espacial" disabled="#{coberturaBean.disabledCoberturaEdit}" actionListener="#{coberturaBean.pasarCobertura(documentalBean.documental.ID_COBERTURA_ESPACIAL)}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ID_COBERTURA_ESPACIAL')}">
+                        <p:column>
+                            <p:outputLabel  value="DEEFINICICION COBERTURA ESPACIAL"/>
+                        </p:column>
+                        <p:column>
+                            <p:panelGrid columns="4" styleClass="Wid60">
+                                <p:outputLabel  value="Pais :"/>
+                                <p:selectOneMenu id="cboDefinicionPais" 
+                                                 filter="false"  
+                                                 required="false"
+                                                 widgetVar="cboDefinicionPais"
+                                                 value="#{documentalBean.documental.PAIS_DEFINIDO}"
+                                                 styleClass="Wid100Imp cboDefinicionPais">
+                                    <f:selectItem itemLabel="Definido" itemValue="DF" noSelectionOption="true" />
+
+                                    <f:selectItem itemLabel="[ - ]" itemValue="NF" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="[ ?]" itemValue="IP" noSelectionOption="true" />
+                                </p:selectOneMenu>
+                                <p:outputLabel  value="Ciudad :"/>
+                                <p:selectOneMenu id="cboDefinicionCiudad" 
+                                                 filter="false"
+                                                 required="false"
+                                                 widgetVar="cboDefinicionCiudad"
+                                                 value="#{documentalBean.documental.CIUDAD_DEFINIDA}"
+                                                 styleClass="Wid100Imp cboCobertura">
+                                    <f:selectItem itemLabel="Definido" itemValue="DF" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="[ - ]" itemValue="ND" noSelectionOption="true" />
+                                    <f:selectItem itemLabel="[ ?]" itemValue="IP" noSelectionOption="true" />
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('COBERTURA_TEMPORAL')}">
+                        <p:column>
+                            <p:outputLabel for="cboCoberturaTemporal" value="COBERTURA TEMPORAL "  />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cboCoberturaTemporal" 
+                                             filter="true" filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboCoberturaTemporal"
+                                             value="#{documentalBean.documental.ID_COBERTURA_TEMPORAL}"
+                                             styleClass="Wid100Imp cboCoberturaTemporal">
+                                <f:selectItem itemLabel="Seleccione un siglo" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{coberturaTemporalBean.cboCoberturaTemporal}"/>
+                            </p:selectOneMenu>
+                            <p:tooltip  for="cboCoberturaTemporal" value="#{metadataTablaBean.obtenerAyuda('COBERTURA_TEMPORAL')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:panel>
+                        
+            <p:panel id="prop_intelectual" header="PROPIEDAD INTELECTUAL">
+                <p:panelGrid styleClass="Wid100">
+                    <p:row rendered="#{documentalBean.isVisible('AUTOR')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="cboAutor" value="AUTORES: "/>
+                        </p:column>
+                        <p:column styleClass="Wid70">
+                            <p:selectCheckboxMenu
+                                updateLabel="true"
+                                label=""
+                                id="cboAutor" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboAutor"
+                                value="#{documentalBean.selectedAutor}"
+                                styleClass="Wid100Imp">                                                                
+                                <f:selectItems value="#{autor.cboAutores}" var="x" itemLabel="#{x.NOMBRE}" itemValue="#{x.ID_AUTOR}"/>
+                            </p:selectCheckboxMenu>                            
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:commandButton id="btnRefresh2" widgetVar="btnRefresh2" icon="fa fa-refresh" actionListener="#{autor.rfrhCboAutor()}"/>
+                            <p:commandButton icon="fa fa-plus" title="Agregar Autor" onclick="PF('dlgAutor').show()"></p:commandButton> 
+                        </p:column>
+                    </p:row>
+                    <!--editorial va aca-->
+                    <p:row  rendered="#{documentalBean.isVisible('ID_EDITORIAL')}">
+                        <p:column >
+                            <p:outputLabel for="cboEditorial" value="EDITORIAL: "/>
+                        </p:column>
+                        <p:column >
+                            <p:selectOneMenu
+                                id="cboEditorial" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboEditorial"
+                                value="#{documentalBean.documental.ID_EDITORIAL}"  
+				styleClass="Wid100Imp">
+                                <p:ajax listener="#{editorialBean.cboEditorialChange(documentalBean.documental.ID_EDITORIAL)}" />
+                                <f:selectItem itemLabel="Seleccione editorial" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{editorialBean.cboEditorial}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column >
+                            <p:commandButton id="btnRefresh3" widgetVar="btnRefresh3" icon="fa fa-refresh" actionListener="#{editorialBean.rfrhCboEditorial()}"/>
+                            <p:commandButton id="btnCrearEditorial" icon="fa fa-plus" title="Crear Editorial" onclick="PF('dlgEditorial').show()"></p:commandButton>
+                            <p:commandButton id="btnEditEditorial" icon="fa fa-edit" title="Editar Editorial" disabled="#{editorialBean.disabledcboEditorial}" actionListener="#{editorialBean.pasarEditorial(documentalBean.documental.ID_EDITORIAL)}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('CONTRIBUIDOR')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="listContribuidores" value="CONTRIBUIDORES: "/>
+                        </p:column>
+                        <p:column styleClass="Wid70">
+                            <p:dataList id="listContribuidores" widgetVar="listContribuidores"  value="#{documentalBean.selectedContribuidor}"  var="t" emptyMessage="No se ha agregado aún." itemType="circle">
+                                #{t.indice} - #{t.CONTRIBUIDOR}
+                            </p:dataList>
+                            <p:tooltip  for="listContribuidores" value="#{metadataTablaBean.obtenerAyuda('CONTRIBUIDOR')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:commandButton icon="fa fa-plus" title="Agregar Contribuidor" onclick="PF('dlgContribuidor').show()"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('DERECHOS')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="txtDerecho" value="DERECHOS "/>
+                        </p:column>
+                        <p:column styleClass="Wid70">
+                            <p:inputText id="txtDerecho" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.DERECHO}"
+                                         styleClass="Wid100 txtDerecho">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                            <p:tooltip  for="txtDerecho" value="#{metadataTablaBean.obtenerAyuda('DERECHOS')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('DERECHOS_ACCESO')}">
+                        <p:column>
+                            <p:outputLabel for="txtDerechoAcceso" value="DERECHOS ACCESO "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtDerechoAcceso" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.DERECHO_ACCESO}"
+                                         styleClass="Wid100 txtDerechoAcceso">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                            <p:tooltip  for="txtDerechoAcceso" value="#{metadataTablaBean.obtenerAyuda('DERECHOS_ACCESO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ID_AUDIENCIA')}">
+                        <p:column>
+                            <p:outputLabel for="cboAudiencia" value="AUDIENCIA "  />
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cboAudiencia" 
+                                             filter="true" filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboAudiencia"
+                                             value="#{documentalBean.documental.ID_AUDIENCIA}"
+                                             styleClass="Wid100Imp cboAudiencia">
+                                <f:selectItem itemLabel="Seleccione una audiencia" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{audienciaBean.cboAudiencia}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column>
+                            <p:tooltip  for="cboAudiencia" value="#{metadataTablaBean.obtenerAyuda('ID_AUDIENCIA')}" trackMouse="false" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+
+                    </p:row>
+                </p:panelGrid>
+            </p:panel>
+            
+            <p:panel id="instanciacion" header="INSTANCIACIÓN">
+                <p:panelGrid styleClass="Wid100">
+                    <p:row rendered="#{documentalBean.isVisible('FECHA_PUBLICACION')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="txtFechaPublicacion" value="FECHA PUBLICACION"/>
+                        </p:column>
+                        <p:column styleClass="Wid70">
+                            <p:inputText id="txtFechaPublicacion" value="#{documentalBean.documental.FECHA_PUBLICACION}" styleClass="Wid100 txtFechaPublicacion">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:tooltip  for="txtFechaPublicacion" value="#{metadataTablaBean.obtenerAyuda('FECHA_PUBLICACION')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('FECHA_COPYRIGHT')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="txtFechaCopyright" value="FECHA COPYRIGHT" />
+                        </p:column>
+                        <p:column styleClass="Wid70">
+                            <p:calendar locale="es" id="txtFechaCopyright" value="#{documentalBean.documental.FECHA_COPYRIGHT}" pattern="dd-MM-yyyy" mask="true" styleClass="Wid100Imp txtFechaCopyright">
+                                <f:convertDateTime type="date"  dateStyle="short" pattern="dd-MM-yyyy"/>
+                            </p:calendar>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('FECHA_ACEPTACION')}">
+                        <p:column styleClass="Wid15">
+                            <p:outputLabel for="txtFechaAceptacion" value="FECHA ACEPTACION" />
+                        </p:column>
+                        <p:column styleClass="Wid70">
+                            <p:calendar locale="es" id="txtFechaAceptacion" value="#{documentalBean.documental.FECHA_ACEPTACION}" pattern="dd-MM-yyyy" mask="true" styleClass="Wid100Imp txtFechaAceptacion">
+                                <f:convertDateTime type="date"  dateStyle="short" pattern="dd-MM-yyyy"/>
+                            </p:calendar>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:tooltip  for="txtFechaAceptacion" value="#{metadataTablaBean.obtenerAyuda('FECHA_ACEPTACION')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('SERIE')}">
+                        <p:column>
+                            <p:outputLabel for="cboSerie" value="SERIE:  "/>
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu
+                                updateLabel="true"
+                                label=""
+                                id="cboSerie" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboSerie"
+                                value="#{documentalBean.selectedSerie}"
+                                styleClass="Wid100Imp cboSerie">
+                                <f:selectItems value="#{serieBean.cboSerie}" var="s" itemValue="#{s.ID_SERIE}" itemLabel="#{s.SERIE}" />
+                            </p:selectCheckboxMenu>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton id="btnRefresh4" widgetVar="btnRefresh4" icon="fa fa-refresh" actionListener="#{serieBean.rfrhCboSerie()}"/>
+                            <p:commandButton icon="fa fa-plus" title="Crear Serie" onclick="PF('dlgSerie').show()" />
+                            <p:commandButton id="btnEditarSerie" icon="fa fa-pencil" title="Editar Series" actionListener="#{documentalBean.editarSeries()}"></p:commandButton>
+                        </p:column>
+
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('COLECCION')}">
+                        <p:column>
+                            <p:outputLabel for="cboColeccion" value="COLECCIÓN: "/>
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu 
+                                updateLabel="true"
+                                label = ""
+                                id="cboColeccion" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboColeccion"
+                                value="#{documentalBean.selectedColeccion}" 
+                                styleClass="Wid100Imp cboColeccion">
+                                <f:selectItems value="#{coleccionBean.cboColeccion}" var="c" itemLabel="#{c.DESCRIPCION}" itemValue="#{c.ID_COLECCION}"/>
+                            </p:selectCheckboxMenu>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton id="btnRefresh5" widgetVar="btnRefresh5" icon="fa fa-refresh" actionListener="#{coleccionBean.rfrhCboColeccion()}"/>
+                            <p:commandButton icon="fa fa-plus" title="Crear Colección" onclick="PF('dlgColeccion').show()"></p:commandButton>
+                            <p:commandButton id="btnEditarColeccion" icon="fa fa-pencil" title="Editar Colecciones" actionListener="#{documentalBean.editarColeccion()}"></p:commandButton>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ALBUM')}">
+                        <p:column>
+                            <p:outputLabel for="cboAlbum" value="ALBUM"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cboAlbum" 
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboAlbum"
+                                             value="#{documentalBean.documental.ID_ALBUM}"
+                                             styleClass="Wid100Imp cboAlbum">
+                                <f:selectItem itemLabel="Seleccione un album" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{albumBean.cboAlbum}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:commandButton icon="fa fa-plus" title="Agregar Album" onclick="PF('dlgAlbum').show()"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('NUMERO_PAGINAS')}">
+                        <p:column>
+                            <p:outputLabel for="txtNroPaginas" value="#{documentalBean.lblNropag_Duracion} "/>
+                        </p:column>
+                        <p:column rendered="#{documentalBean.rduracion}">
+                            <p:inputMask id="txtduracion" required="false" value="#{documentalBean.documental.NUMERO_PAGINAS}" styleClass="Wid100Imp txtNroPaginas" mask="99:99:99"/>                            
+                        </p:column>
+                        <p:column  rendered="#{documentalBean.rnropag}">
+                            <p:inputText id="txtNroPaginas" required="false" value="#{documentalBean.documental.NUMERO_PAGINAS}" styleClass="Wid100Imp txtNroPaginas" >
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>                            
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ID_FORMATO')}">
+                        <p:column>
+                            <p:outputLabel for="cboFormato" value="FORMATO"/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cboFormato" 
+                                             filter="true" filterMatchMode="contains"
+                                             required="false"
+                                             widgetVar="cboFormato"
+                                             value="#{documentalBean.documental.ID_FORMATO}"
+                                             styleClass="Wid100Imp cboFormato">
+                                <f:selectItem itemLabel="Seleccione un formato" itemValue="-1" noSelectionOption="true" />
+                                <f:selectItems value="#{formatoBean.cboFormato}" var="x" itemLabel="#{x.TIPO}" itemValue="#{x.ID_FORMATO}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        <p:column styleClass="Wid15">
+                            <p:tooltip  for="cboFormato" value="#{metadataTablaBean.obtenerAyuda('ID_FORMATO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('FORMATO_EXTENSION')}">
+                        <p:column>
+                            <p:outputLabel for="txtFormatoExtension" value="FORMATO EXTENSION "/>
+
+                        </p:column>
+
+                        <p:column style="padding-left:0px;">
+                            <p:inplace styleClass="claseInplace txtFormatoExtension"  id="txtFormatoExtension" label="#{documentalBean.documental.FORMATO_EXTENSION}"  effectSpeed="fast" editor="true">
+                                <p:ajax event="save" listener="#{documentalBean.procesarExtension()}" />
+                                <p:panelGrid columns="3">
+                                    <p:spinner id="txtTamañoNumero" styleClass="txtTamañoNumero" value="#{documentalBean.peso}">
+                                    </p:spinner>
+                                    <p:selectOneMenu id="cboExTemporal" styleClass="cboExTemporal"
+                                                     required="false"
+                                                     widgetVar="cboExTemporal"
+                                                     value="#{documentalBean.extension}"
+                                                     style="width:200px">
+                                        <f:selectItem itemLabel="Selecione extensión de medio" itemValue="-1" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="MB" itemValue="MB" />
+                                        <f:selectItem itemLabel="KB" itemValue="KB" />
+                                        <f:selectItem itemLabel="GB" itemValue="GB" />                                     
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                            </p:inplace> 
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('FORMATO_MEDIO')}">
+                        <p:column>
+                            <p:outputLabel for="cboFormatoMedio" value="FORMATO MEDIO "/>
+                        </p:column>
+                        <p:column>
+                            <p:selectOneMenu id="cboFormatoMedio"
+                                             required="false"
+                                             widgetVar="cboFormatoMedio"
+                                             value="#{documentalBean.documental.ID_FORMATO_MEDIO}"
+                                             style="width: 100%" > 
+                                <p:ajax listener="#{documentalBean.cboFormatoChange()}"/>
+                                <f:selectItem itemLabel="Selecione formato del medio" itemValue="-1" noSelectionOption="true"/>
+                                <f:selectItems value="#{formatoMedioBean.cboFormatoMedio}" var="y" itemValue="#{y.ID_FORMATO_MEDIO}" itemLabel="#{y.DESCRIPCION}" />
+                            </p:selectOneMenu>
+                            <p:tooltip  for="cboFormatoMedio" value="#{metadataTablaBean.obtenerAyuda('FORMATO_MEDIO')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                        <p:column>
+                            <p:commandButton id="btnRefresh6" widgetVar="btnRefresh6" icon="fa fa-refresh" actionListener="#{formatoMedioBean.rfrhCboFrmtMedio()}"/>
+                            <p:commandButton id="btnAgregarFM" icon="fa fa-plus" title="Agregar Formato-Medio" onclick="PF('dlgAddFormatoMedio').show()" />
+                            <p:commandButton id="btnEditarFM" icon="fa fa-edit" title="Editar Formato-Medio" disabled="#{documentalBean.disabledcboFormatoMedio}" actionListener="#{documentalBean.obtenerIdFormatoMedio()}"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('URL')}">
+                        <p:column>
+                            <p:outputLabel for="txtURL" value="URL "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtURL" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.URL}"
+                                         styleClass="Wid100 txtURL">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                            <p:tooltip  for="txtURL" value="#{metadataTablaBean.obtenerAyuda('URL')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+                    <p:row rendered="#{documentalBean.isVisible('ISBN')}">
+                        <p:column>
+                            <p:outputLabel for="txtISBN" value="ISBN "/>
+                        </p:column>
+                        <p:column>
+                            <p:inputText id="txtISBN" 
+                                         required="false" 
+                                         value="#{documentalBean.documental.ISBN}"
+                                         styleClass="Wid100 txtISBN">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputText>
+                            <p:tooltip  for="txtISBN" value="#{metadataTablaBean.obtenerAyuda('ISBN')}" rendered="#{metadataTablaBean.activarayuda}" escape="false"/>
+                        </p:column>
+                    </p:row>
+
+                    <p:row rendered="#{documentalBean.isVisible('LENGUAJE')}">
+                        <p:column>
+                            <p:outputLabel for="cboLenguaje" value="LENGUAJES "  />
+                        </p:column>
+                        <p:column>
+                            <p:selectCheckboxMenu
+                                updateLabel="true"
+                                label=""
+                                id="cboLenguaje" 
+                                filter="true" filterMatchMode="contains"
+                                required="false"
+                                widgetVar="cboLenguaje"
+                                value="#{documentalBean.selectedLenguaje}"
+                                styleClass="Wid100Imp cboLenguaje">
+                                <f:selectItems value="#{lenguajeBean.cboLenguaje}" var="x" itemLabel="#{x.LENGUAJE}" itemValue="#{x.ID_LENGUAJE}"/>
+                            </p:selectCheckboxMenu>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+            </p:panel>
+
+
+            <p:panelGrid>                
+                <p:commandButton  value="#{documentalBean.registrartModificar.toUpperCase()}" actionListener="#{documentalBean.insertDocumentalXperfil()}" styleClass="Wid100"/>         
+            </p:panelGrid>
+        </h:form>
+
+        <p:dialog id="dlgAlbum" widgetVar="dlgAlbum" styleClass="claseAux35" closeOnEscape="true" modal="true" header="NUEVO ALBUM :" resizable="false" showEffect="puff" hideEffect="puff">
+            <h:form id="frmAlbum">
+                <h:panelGrid id="gridAlbum" columns="2" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="txtAlbum" value="ALBUM : " />
+                    <p:inputText id="txtAlbum" style="width: 370px" value="#{albumBean.album.DESCRIPCION}">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:commandButton value="REGISTRAR TEMA" actionListener="#{albumBean.creaAlbum}" update=":frmAlbum:gridAlbum :frmAddDocumental:cboAlbum" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgTema" widgetVar="dlgTema" styleClass="claseAux35" closeOnEscape="true" modal="true" header="NUEVO TEMA :" resizable="false" showEffect="puff" hideEffect="puff">
+            <h:form id="frmTema">
+                <h:panelGrid id="gridTema" columns="2" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="txtTema" value="TEMA : " />
+                    <p:inputText id="txtTema" style="width: 370px" value="#{temaBean.tema.TEMA}">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:commandButton value="REGISTRAR TEMA" actionListener="#{temaBean.creaTema}" update=":frmTema:gridTema :frmAddDocumental:cboTema" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgIndice" widgetVar="dlgIndice" styleClass="Wid100 claseAux2" modal="true" resizable="false" showHeader="false" showEffect="puff" hideEffect="puff" width="70%" height="50%" closable="false" style="overflow: auto;">
+
+            <h:form id="frmTablaContenido">
+                <p:panel id="contenido" header="TABLA DE CONTENIDOS" >
+                    <div class="ui-grid ui-grid-responsive" >
+                        <div class="ui-grid-row" >
+                            <div class="ui-grid-col-9">
+                                <p:panelGrid columns="3" styleClass="Wid100" columnClasses="Wid15 , Wid65, Wid20">
+                                    <h:outputLabel value="INDICE:" />
+                                    <p:spinner  value="#{documentalBean.aux.indice}" min="1" styleClass="Wid100Imp" />
+                                    <p:spacer/>
+
+                                    <h:outputLabel value="DESCRIPCIÓN:" />
+                                    <p:inputTextarea value="#{documentalBean.aux.tema}" styleClass="Wid100" rows="2" autoResize="false" >
+                                        <f:converter converterId="trimConverter"/>
+                                    </p:inputTextarea>
+                                    <p:commandButton value="Agregar"
+                                                     actionListener="#{documentalBean.insertar}" styleClass="Wid100" update=":frmTablaContenido"/>
+                                </p:panelGrid> 
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:messages showDetail="true" closable="true" escape="true" />
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
+                <h:panelGroup layout="block" styleClass="Card ShadowEffect BlueBack TexAlCenter" >
+                    <h2 class="CardTopic Fs18 White DispBlock ClearBoth" style="text-align: left"><i class="icon-mountains14 Fs20 Fleft MarRight10"/>Verificar tabla de contenidos : </h2>
+                    <div class="SeparatorFull"></div>
+                    <p:dataTable id="tblContenido" editable="true" widgetVar="tblContenido" paginator="true" paginatorPosition="top" value="#{documentalBean.listaTemas}" var="x"
+                                 emptyMessage="No se han agregado registros." rows="7" style="height: 49%; margin-bottom: 1px" scrollable="true" scrollHeight="220" >
+                        <p:ajax event="rowEdit" listener="#{documentalBean.onRowEdit}" />
+                        <p:ajax event="rowEditCancel" listener="#{documentalBean.onRowCancel}"/>
+                        <p:column headerText="INDICE" width="5%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{x.indice}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{x.indice}" disabled="true" style="width:100%">
+                                        <f:converter converterId="trimConverter"/>
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="DESCRIPCIÓN:" width="82%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{x.tema}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{x.tema}" style="width:100%">
+                                        <f:converter converterId="trimConverter"/>
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="BORRAR" id="borrar" width="8%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <p:commandButton id="btn1" ajax="true"  icon="fa fa-close"  update=":frmTablaContenido:tblContenido" process="@this" >
+                                        <p:collector value="#{x}" removeFrom="#{documentalBean.listaTemas}" unique="true"/>
+                                    </p:commandButton>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:commandButton id="btn2" ajax="true"  disabled="true" update=":frmTablaContenido:tblContenido" process="@this" icon="fa fa-close" />                         
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column width="8%" headerText="EDITAR">
+                            <p:rowEditor />
+                        </p:column>
+                    </p:dataTable>
+                    <div class="CardFooter">
+                        <div class="CardFooterBtn White xboton" >
+                            <h4>
+                                <i class="fa fa-check-circle-o Fs20"/>
+                                <p:commandLink value=" Aceptar" actionListener="#{documentalBean.pasar()}" />
+                            </h4>
+                        </div>
+                        <div class="CardFooterBtn White xboton" >
+                            <h4>
+                                <i class="icon-cancel19 Fs18"/>
+                                <p:commandLink value=" Cancelar" type="reset" actionListener="#{documentalBean.limpiar}"  />
+                            </h4>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgAddCobertura" 
+                  closeOnEscape="true" 
+                  modal="true" header="..:: REGISTRAR COBERTURA ::.." 
+                  resizable="false" 
+                  showEffect="puff" 
+                  widgetVar="dlgCoberturaEscpacial" 
+                  hideEffect="puff"
+                  styleClass="claseAux30"
+                  draggable="false">
+            <h:form id="frmCobertura">
+                <h:panelGrid id="gridCobertura" columns="2" cellpadding="5" columnClasses="Wid30,Wid70">
+                    <p:outputLabel for="txtIdPaisAgregar" value="PAIS:" />
+                    <p:selectOneMenu id="txtIdPaisAgregar" filter="true" filterMatchMode="contains"
+                                     widgetVar="txtIdPaisAgregar" 
+                                     value="#{coberturaBean.cobertura.ID_PAIS}" 
+                                     required="false"
+                                     style="width: 300px">
+                        <f:selectItem itemLabel="Seleccione un país" itemValue="-1" noSelectionOption="true" />
+                        <f:selectItems value="#{coberturaBean.cboPais}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="txtCiudadActualAgregar" value="CIUDAD ACTUAL:" />
+                    <p:inputText id="txtCiudadActualAgregar" value="#{coberturaBean.cobertura.CIUDAD_ACTUAL}" styleClass="Wid100">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="txtCiudadAntiguaAgregar" value="CIUDAD ANTIGUA: " />
+                    <p:inputText id="txtCiudadAntiguaAgregar" value="#{coberturaBean.cobertura.CIUDAD_ANTIGUA}" styleClass="Wid100">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel value="" />
+                    <p:commandButton value="REGISTRAR COBERTURA" actionListener="#{coberturaBean.creaCobertura}">
+                    </p:commandButton>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgAddCoberturaEditar" 
+                  closeOnEscape="true" 
+                  modal="true" header="..:: EDITAR COBERTURA ESPACIAL ::.." 
+                  resizable="false" 
+                  showEffect="puff" 
+                  widgetVar="dlgAddCoberturaEditar" 
+                  hideEffect="puff"
+                  styleClass="claseAux30"
+                  draggable="false">
+            <h:form id="frmCoberturaEditar">
+                <h:panelGrid id="gridCoberturaEditar" columns="2" cellpadding="5" columnClasses="Wid30,Wid70">
+                    <p:outputLabel for="txtIdPaisEditar" value="PAIS:" />
+                    <p:selectOneMenu id="txtIdPaisEditar" 
+                                     filter="true" filterMatchMode="contains"
+                                     widgetVar="cboPais" 
+                                     value="#{coberturaBean.cobertura.ID_PAIS}" 
+                                     required="false"
+                                     style="width: 300px">
+                        <f:selectItem itemLabel="Seleccione un país" itemValue="-1" noSelectionOption="true" />
+                        <f:selectItems value="#{coberturaBean.cboPais}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel for="txtCiudad" value="CIUDAD ACTUAL:" />
+                    <p:inputText id="txtCiudad" value="#{coberturaBean.cobertura.CIUDAD_ACTUAL}" styleClass="Wid100">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="txtCiudadAntigua" value="CIUDAD ANTIGUA: " />
+                    <p:inputText id="txtCiudadAntigua" value="#{coberturaBean.cobertura.CIUDAD_ANTIGUA}" styleClass="Wid100">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel value="" />
+                    <p:commandButton value="MODIFICAR COBERTURA" actionListener="#{coberturaBean.editarCobertura()}" update=":frmCobertura:gridCobertura :frmAddDocumental:cboCobertura"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgAutor" widgetVar="dlgAutor" styleClass="claseAux30" closeOnEscape="true" modal="true" header="..:: MANTENIMIENTO AUTOR ::.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmAutor">
+                <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+                    <p:outputLabel for="tipo" value="Tipo :" />
+                    <p:selectOneRadio id="tipo" value="#{autor.tipoAutor}" >
+                        <p:ajax listener="#{autor.mostrarCamposAutores()}"/>
+                        <f:selectItem itemLabel="Normal" itemValue="1"  />
+                        <f:selectItem itemLabel="Especial" itemValue="2" />                            
+                    </p:selectOneRadio>
+                </h:panelGrid>
+                <h:panelGrid id="gridAutor1" columns="2" cellpadding="5" columnClasses="label, value" class="autorAux1">
+                    <p:outputLabel for="nombre" value="NOMBRES: "/>
+                    <p:inputText id="nombre" value="#{autor.autAdd.NOMBRE}" >
+                        <f:converter converterId="trimConverter"/>                    
+                    </p:inputText>
+                    <p:outputLabel for="paterno" value="AP. PATERNO: "/>
+                    <p:inputText id="paterno" value="#{autor.autAdd.APELLIDO_PATERNO}" >
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="materno" value="AP. MATERNO: "/>
+                    <p:inputText id="materno" value="#{autor.autAdd.APELLIDO_MATERNO}" >
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>  
+                    <p:outputLabel for="pais" value="NACIONALIDAD : "/>
+                    <p:selectOneMenu id="pais" filter="true" filterMatchMode="contains" widgetVar="cboPaisAutor" value="#{autor.autAdd.ID_PAIS}" style="width: 310px;overflow-y: 150px;">
+                        <f:selectItem itemLabel="Seleccione un país" itemValue="-1" noSelectionOption="true" />
+                        <f:selectItems value="#{autor.cboPais}"/>
+                    </p:selectOneMenu>                       
+                    <p:spacer/>
+                    <p:commandButton value="REGISTRAR" actionListener="#{autor.crearAutorDocumental()}" />
+                </h:panelGrid>
+                <h:panelGrid id="gridAutor2" columns="2" cellpadding="5" columnClasses="label, value" class="autorAux2">
+                    <p:outputLabel for="alternativo" value="ALTERNATIVO : "/>
+                    <p:inputText id="alternativo" value="#{autor.autAddAlternativo.ALTERNATIVO}" >
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="pais2" value="NACIONALIDAD : "/>
+                    <p:selectOneMenu id="pais2" filter="true" filterMatchMode="contains" widgetVar="cboPaisAutor2" value="#{autor.autAddAlternativo.ID_PAIS}" style="width: 310px;overflow-y: 150px;">
+                        <f:selectItem itemLabel="Seleccione un país" itemValue="-1" noSelectionOption="true" />
+                        <f:selectItems value="#{autor.cboPais}"/>
+                    </p:selectOneMenu>                       
+                    <p:spacer/>
+                    <p:commandButton value="REGISTRAR" actionListener="#{autor.crearAutorDocumental()}" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgEditorial" widgetVar="dlgEditorial" styleClass="claseAux30" closeOnEscape="true" modal="true" header="..: MANTENIMIENTO EDITORIAL :.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmEditorial" >
+                <h:panelGrid id="gridEditorial" columns="2" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="txtEeditorial" value="EDITORIAL: " />
+                    <p:inputText id="txtEeditorial" value="#{editorialBean.editorial.NOMBRE_EDITORIAL}">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:commandButton value="REGISTRAR EDITORIAL" actionListener="#{editorialBean.crearEditorial()}"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgEditEditorial" widgetVar="dlgEditEditorial" styleClass="claseAux30" closeOnEscape="true" modal="true" header="..: EDITAR EDITORIAL :.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmEditEditorial" >
+                <h:panelGrid id="gridEditEditorial" columns="2" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="txtEditIdEditorial" value="ID: " />
+                    <p:inputText id="txtEditIdEditorial" value="#{editorialBean.editEditorial.ID_EDITORIAL}" disabled="true">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="txtEditEditorial" value="EDITORIAL: " />
+                    <p:inputText id="txtEditEditorial" value="#{editorialBean.editEditorial.NOMBRE_EDITORIAL}">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:spacer/>
+                    <p:commandButton value="EDITAR EDITORIAL" actionListener="#{editorialBean.modificarEd()}"/>                    
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>         
+        <p:dialog  id="dlgContribuidor" widgetVar="dlgContribuidor" styleClass="Wid100 claseAux2" modal="true" showHeader="false" resizable="false" showEffect="puff" hideEffect="puff" width="70%" height="50%" closable="false" style="overflow: auto">
+            <h:form id="frmContribuidor">
+                <p:panel id="pnlContribuidor" header="CONTRIBUIDORES" >
+                    <div class="ui-grid ui-grid-responsive" >
+                        <div class="ui-grid-row" >
+                            <div class="ui-grid-col-9">
+                                <p:panelGrid columns="3" styleClass="Wid100" columnClasses="Wid15 , Wid65, Wid20">
+                                    <h:outputLabel value="NRO:" ></h:outputLabel>
+                                    <p:spinner  value="#{documentalBean.objContribuidor.indice}" min="1" styleClass="Wid100Imp"/>
+                                    <p:spacer/>
+
+                                    <h:outputLabel value="DESCRIPCIÓN:" ></h:outputLabel>
+                                    <p:inputTextarea value="#{documentalBean.objContribuidor.CONTRIBUIDOR}" styleClass="Wid100" rows="2" autoResize="false" >
+                                        <f:converter converterId="trimConverter"/>
+                                    </p:inputTextarea>
+                                    <p:commandButton value="Agregar" update=":frmContribuidor:pnlContribuidor :frmContribuidor:tblContribuidor" 
+                                                     actionListener="#{documentalBean.insertarContribuidores()}" styleClass="Wid100" />
+                                </p:panelGrid>
+                            </div>
+                            <div class="ui-grid-col-3">
+                                <p:messages showDetail="true" closable="true" escape="true" />
+                            </div>
+                        </div>
+                    </div>
+                </p:panel>
+                <h:panelGroup layout="block" styleClass="Card ShadowEffect BlueBack TexAlCenter">
+                    <h2 class="CardTopic Fs18 White DispBlock ClearBoth" style="text-align: left"><i class="icon-mountains14 Fs20 Fleft MarRight10"/>Verificar tabla de conttribuidores : </h2>
+                    <div class="SeparatorFull"></div>
+                    <p:dataTable id="tblContribuidor" editable="true" widgetVar="tblContribuidor" paginator="true" paginatorPosition="top" value="#{documentalBean.lstContribuidor}" var="x"
+                                 emptyMessage="No se han agregado registros." rows="7" style="height: 49%" scrollable="true" scrollHeight="220" >
+                        <p:ajax event="rowEdit" listener="#{documentalBean.onRowEditContribuidores}" />
+                        <p:ajax event="rowEditCancel" listener="#{documentalBean.onRowCancelContribuidores}"/>
+                        <p:ajax event="rowEditInit" listener="#{documentalBean.onRowInitContribuidores}"  />
+                        <p:column headerText="NRO" width="5%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{x.indice}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{x.indice}" disabled="true" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="DESCRIPCION" width="82%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{x.CONTRIBUIDOR}" />
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{x.CONTRIBUIDOR}" style="width:100%"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="BORRAR" id="borrar" width="8%">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <p:commandButton id="xd" ajax="true"  icon="fa fa-close"  update=":frmContribuidor:tblContribuidor" process="@this" >
+                                        <p:collector value="#{x}" removeFrom="#{documentalBean.lstContribuidor}" unique="true"/>
+                                    </p:commandButton>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:commandButton id="xd3" ajax="true"  disabled="true" update=":frmContribuidor:tblContribuidor"  icon="fa fa-close" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column width="8%" headerText="EDITAR">
+                            <p:rowEditor />
+                        </p:column>
+                    </p:dataTable>
+                    <div class="CardFooter">
+                        <div class="CardFooterBtn White xboton" >
+                            <h4>
+                                <i class="fa fa-check-circle-o Fs20"/>
+                                <p:commandLink value=" Aceptar" actionListener="#{documentalBean.pasarContribuidores}"/>
+                            </h4>
+                        </div>
+                        <div class="CardFooterBtn White xboton" >
+                            <h4>
+                                <i class="icon-cancel19 Fs18"/>
+                                <p:commandLink value=" Cancelar" type="reset"  actionListener="#{documentalBean.limpiarContribuidores}"/>
+                            </h4>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgSerie" widgetVar="dlgSerie" styleClass="claseAux25" closeOnEscape="true" modal="true" header="..: MANTENIMIENTO SERIE :.." resizable="false" showEffect="puff" hideEffect="puff" draggable="false">
+            <h:form id="frmSerie">
+                <h:panelGrid id="gridSerie" columns="2" cellpadding="5" >
+                    <p:column>
+                        <p:row>
+                            <p:outputLabel for="txtSerie" value="NOMBRE DE LA SERIE:" styleClass="Fleft MarRight10 MarTop20" style="padding-bottom: 25%" />
+                        </p:row>
+                    </p:column>
+                    <p:column>
+                        <p:row>
+                            <p:inputTextarea id="txtSerie" 
+                                             required="false" 
+                                             value="#{serieBean.serie.SERIE}" 
+                                             maxlength="#{metadataTablaBean.obtenerLongitud('SERIE')}"
+                                             counter="countSerie" styleClass="Wid100"
+                                             counterTemplate="{0} caracteres.">
+                                <f:converter converterId="trimConverter"/>
+                            </p:inputTextarea><br/>
+                            <p:outputLabel id="countSerie" style="float: right" /><br/>
+                            <p:commandButton id="btnAddSerie" value="REGISTRAR SERIE" actionListener="#{serieBean.crearSerie()}" />
+                        </p:row>
+                    </p:column> 
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgColeccion" widgetVar="dlgColeccion" styleClass="claseAux35" closeOnEscape="true" modal="true" header="..: MANTENIMIENTO COLECCIÓN :.." resizable="false" showEffect="puff" hideEffect="puff" draggable="false">
+            <h:form id="frmColeccion">
+                <h:panelGrid id="gridColeccion" columns="2" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="txtIdColeccion" value="COD COLECCIÓN: " />
+                    <p:inputText id="txtIdColeccion" value="#{coleccionBean.coleccion.COD_COLECCION}" required="true">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="txtColeccion" value="NOMBRE DE LA COLECCIÓN: " />
+                    <p:inputText id="txtColeccion" value="#{coleccionBean.coleccion.DESCRIPCION}" required="true">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:commandButton value="REGISTRAR COLECCIÓN" actionListener="#{coleccionBean.creaColeccion()}" update=":frmColeccion:gridColeccion :frmAddDocumental:cboColeccion" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>        
+        <p:dialog id="dlgAddFormatoMedio" widgetVar="dlgAddFormatoMedio" styleClass="claseAux35" closeOnEscape="true" modal="true" header="..: AGREGAR FORMATO-MEDIO :.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmFormatoMedio">
+                <h:panelGrid id="gridFormatoMedio" columns="2" cellpadding="5" columnClasses="label, value">                    
+                    <p:outputLabel for="descripcion" value="DESCRIPCION : "/>
+                    <p:inputText id="descripcion" value="#{formatoMedioBean.formatomedio.DESCRIPCION}" required="true">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>                                           
+                    <p:spacer/>
+                    <p:commandButton value="REGISTRAR" update=":frmFormatoMedio:gridFormatoMedio :frmAddDocumental:cboFormatoMedio" actionListener="#{formatoMedioBean.agregarFormatoMedio()}" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgEditFormatoMedio" widgetVar="dlgEditFormatoMedio" styleClass="claseAux35" closeOnEscape="true" modal="true" header="..:: ACTUALIZAR FORMATO-MEDIO ::.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmEditFormatoMedio">
+                <h:panelGrid id="gridEditFormatoMedio" columns="2" cellpadding="5" columnClasses="label, value">
+                    <p:outputLabel for="idEditFormatoMedio" value="ID : "/>
+                    <p:inputText id="idEditFormatoMedio" value="#{documentalBean.fm.ID_FORMATO_MEDIO}" required="false" disabled="true">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>
+                    <p:outputLabel for="Editdescripcion" value="DESCRIPCION : "/>
+                    <p:inputText id="Editdescripcion" value="#{documentalBean.fm.DESCRIPCION}" required="true">
+                        <f:converter converterId="trimConverter"/>
+                    </p:inputText>                                           
+                    <p:spacer/>
+                    <p:commandButton value="ACTUALIZAR" update=":frmEditFormatoMedio:gridEditFormatoMedio :frmAddDocumental:cboFormatoMedio"  onclick="PF('dlgEditFormatoMedio').hide()" actionListener="#{documentalBean.actualizarFormatoMedio()}" />
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <p:dialog id="dlgEditSerie" widgetVar="dlgEditSerie" styleClass="claseAux30 Wid60Imp" closeOnEscape="true" modal="true" header="..: EDITAR SERIES SELECCIONADAS :.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmEditSerie" >
+                <p:dataTable editable="true" id="tblEditSerie" value="#{documentalBean.listSerie}" var="se">
+                    <p:ajax event="rowEdit" listener="#{documentalBean.cellEditSerie}"/>
+                    <p:ajax event="rowEditCancel" listener="#{documentalBean.cellCancelSerie}"/>
+                    <p:column headerText="ID_SERIE" styleClass="Wid15">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{se.ID_SERIE}" /></f:facet>
+                            <f:facet name="input"><h:outputText value="#{se.ID_SERIE}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="SERIE" styleClass="Wid85">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{se.SERIE}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{se.SERIE}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column style="width:32px">
+                        <p:rowEditor />
+                    </p:column>
+                </p:dataTable>
+                <p:separator/>
+            </h:form>
+        </p:dialog>
+
+
+        <p:dialog id="dlgEditTema" widgetVar="dlgEditTema" styleClass="claseAux30 Wid60Imp" closeOnEscape="true" modal="true" header="..: EDITAR TEMAS SELECCIONADAS :.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false">
+            <h:form id="frmEditTema" >
+                <p:dataTable editable="true" id="tblEditTema" value="#{documentalBean.listaTema}" var="lTemas">
+                    <p:ajax event="rowEdit" listener="#{documentalBean.cellEditTema}"/>
+                    <p:ajax event="rowEditCancel" listener="#{documentalBean.cellCancelTema}"/>
+                    <p:column headerText="ID_TEMA" styleClass="Wid15">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{lTemas.ID_TEMA}" /></f:facet>
+                            <f:facet name="input"><h:outputText value="#{lTemas.ID_TEMA}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="TEMA" styleClass="Wid85">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{lTemas.TEMA}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{lTemas.TEMA}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column style="width:32px">
+                        <p:rowEditor />
+                    </p:column>
+                </p:dataTable>
+                <p:separator/>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog id="dlgEditColeccion" widgetVar="dlgEditColeccion" styleClass="claseAux30 Wid60Imp" closeOnEscape="true" modal="true" header="..: EDITAR COLECCION SELECCIONADAS :.." resizable="false" showEffect="puff"  hideEffect="puff" draggable="false" >
+            <h:form id="frmEditColeccion" >
+                <p:dataTable editable="true" id="tblEditColeccion" value="#{documentalBean.listColeccion}" var="x">
+                    <p:ajax event="rowEdit" listener="#{documentalBean.cellEditColeccion}"/>
+                    <p:ajax event="rowEditCancel" listener="#{documentalBean.cellCancelColeccion}"/>
+                    <p:column headerText="ID_COLECCION" styleClass="Wid15">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{x.ID_COLECCION}" /></f:facet>
+                            <f:facet name="input"><h:outputText value="#{x.ID_COLECCION}" style="width:100%"/></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="COD_COLECCION" styleClass="Wid85">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{x.COD_COLECCION}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{x.COD_COLECCION}" style="width:100%"><f:converter converterId="trimConverter"/></p:inputText></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column headerText="COLECCION" styleClass="Wid85">
+                        <p:cellEditor>
+                            <f:facet name="output"><h:outputText value="#{x.DESCRIPCION}" /></f:facet>
+                            <f:facet name="input"><p:inputText value="#{x.DESCRIPCION}" style="width:100%"><f:converter converterId="trimConverter"/></p:inputText></f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column style="width:32px">
+                        <p:rowEditor />
+                    </p:column>
+                </p:dataTable>
+                <p:separator/>
+            </h:form>
+        </p:dialog>
+        <style>
+            .ui-selectcheckboxmenu-panel .ui-selectcheckboxmenu-close .ui-icon-circle-close{
+                display:none;
+            }
+        </style>
+    </ui:define>
+</ui:composition>

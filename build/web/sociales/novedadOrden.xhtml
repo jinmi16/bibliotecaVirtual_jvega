@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../template/plantilla0.1.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="breadcumb">
+        <p:breadCrumb styleClass="ShowOnDesktop" >
+            <p:menuitem url="/principal" />
+            <p:menuitem value="Sociales" url="#" />
+            <p:menuitem value="Registro" url="/Sociales/Admin" />
+        </p:breadCrumb>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:tabMenu activeIndex="2">
+            <p:menuitem value="Listado" outcome="novedadList.xhtml" styleClass="icon-list">
+            </p:menuitem>
+            <p:menuitem value="Nuevo" outcome="novedadAdd.xhtml" styleClass="icon-googleplus">
+            </p:menuitem>
+            <p:menuitem value="Orden" outcome="novedadOrden.xhtml" styleClass="icon-import">
+            </p:menuitem>
+        </p:tabMenu>
+        
+        
+        
+
+    </ui:define>
+
+</ui:composition>
+
+
